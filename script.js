@@ -30,6 +30,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (savedFesyaHTML && savedFesyaHTML.trim().length > 200 && profileViews.fesya) {
             profileViews.fesya.innerHTML = savedFesyaHTML;
         }
+
+        // Sinkronisasi foto asli (ganti placeholder unsplash lama secara otomatis)
+        if (profileViews.syifa) {
+            const imgSyifa = profileViews.syifa.querySelector('.avatar-img');
+            if (imgSyifa && (imgSyifa.src.includes('unsplash.com') || !imgSyifa.src)) {
+                imgSyifa.src = 'images/syifa.jpg';
+            }
+        }
+        if (profileViews.fesya) {
+            const imgFebri = profileViews.fesya.querySelector('.avatar-img');
+            if (imgFebri && (imgFebri.src.includes('unsplash.com') || !imgFebri.src)) {
+                imgFebri.src = 'images/febri.jpg';
+            }
+        }
     } catch (e) {
         console.warn('Gagal membaca LocalStorage:', e);
     }
