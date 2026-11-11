@@ -13,28 +13,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const htmlElement = document.documentElement;
 
     // =========================================================================
-    // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE DENGAN CACHE VERSION
+    // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
-    const DATA_VERSION = 'v5_febri';
-    if (localStorage.getItem('biodata_data_version') !== DATA_VERSION) {
-        localStorage.removeItem('biodata_html_syifa');
-        localStorage.removeItem('biodata_html_fesya');
-        localStorage.setItem('biodata_data_version', DATA_VERSION);
-    }
-
     const profileViews = {
         syifa: document.getElementById('view-syifa'),
         fesya: document.getElementById('view-fesya')
     };
 
-    // Muat editan kustom yang tersimpan permanen di browser
-    const savedSyifaHTML = localStorage.getItem('biodata_html_syifa');
-    if (savedSyifaHTML && profileViews.syifa) {
-        profileViews.syifa.innerHTML = savedSyifaHTML;
-    }
-    const savedFesyaHTML = localStorage.getItem('biodata_html_fesya');
-    if (savedFesyaHTML && profileViews.fesya) {
-        profileViews.fesya.innerHTML = savedFesyaHTML;
+    // Muat editan kustom yang tersimpan permanen di browser (hanya jika valid)
+    try {
+        const savedSyifaHTML = localStorage.getItem('biodata_html_syifa');
+        if (savedSyifaHTML && savedSyifaHTML.trim().length > 200 && profileViews.syifa) {
+            profileViews.syifa.innerHTML = savedSyifaHTML;
+        }
+        const savedFesyaHTML = localStorage.getItem('biodata_html_fesya');
+        if (savedFesyaHTML && savedFesyaHTML.trim().length > 200 && profileViews.fesya) {
+            profileViews.fesya.innerHTML = savedFesyaHTML;
+        }
+    } catch (e) {
+        console.warn('Gagal membaca LocalStorage:', e);
     }
 
     // =========================================================================
@@ -44,7 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoBadge = document.getElementById('logo-badge');
     const logoText = document.getElementById('logo-text');
 
-    const savedProfile = localStorage.getItem('active-profile') || 'syifa';
+    let savedProfile = localStorage.getItem('active-profile') || 'syifa';
+    if (savedProfile !== 'fesya' && savedProfile !== 'syifa') {
+        savedProfile = 'syifa';
+    }
     switchProfile(savedProfile);
 
     profileTabs.forEach(tab => {
@@ -55,8 +55,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function switchProfile(profileId) {
+        if (profileId !== 'fesya' && profileId !== 'syifa') {
+            profileId = 'syifa';
+        }
+
         htmlElement.setAttribute('data-active-profile', profileId);
-        localStorage.setItem('active-profile', profileId);
+        try {
+            localStorage.setItem('active-profile', profileId);
+        } catch (e) {
+            console.warn(e);
+        }
 
         profileTabs.forEach(tab => {
             const isActive = tab.dataset.profile === profileId;
@@ -183,31 +191,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // FUNGSI SIMPAN PERMANEN KE LOCALSTORAGE (AUTO-SAVE)
     function saveCurrentData(silent = false) {
-        updateContactLinks(profileViews.syifa);
-        updateContactLinks(profileViews.fesya);
+        try {
+            updateContactLinks(profileViews.syifa);
+            updateContactLinks(profileViews.fesya);
 
-        function getCleanHTML(container) {
-            if (!container) return '';
-            const clone = container.cloneNode(true);
-            const editables = clone.querySelectorAll('[contenteditable]');
-            editables.forEach(el => {
-                el.removeAttribute('contenteditable');
-                el.removeAttribute('spellcheck');
-            });
-            return clone.innerHTML;
-        }
+            function getCleanHTML(container) {
+                if (!container) return '';
+                const clone = container.cloneNode(true);
+                const editables = clone.querySelectorAll('[contenteditable]');
+                editables.forEach(el => {
+                    el.removeAttribute('contenteditable');
+                    el.removeAttribute('spellcheck');
+                });
+                return clone.innerHTML;
+            }
 
-        if (profileViews.syifa) {
-            const html = getCleanHTML(profileViews.syifa);
-            localStorage.setItem('biodata_html_syifa', html);
-        }
-        if (profileViews.fesya) {
-            const html = getCleanHTML(profileViews.fesya);
-            localStorage.setItem('biodata_html_fesya', html);
-        }
+            if (profileViews.syifa) {
+                const html = getCleanHTML(profileViews.syifa);
+                if (html && html.trim().length > 200) {
+                    localStorage.setItem('biodata_html_syifa', html);
+                }
+            }
+            if (profileViews.fesya) {
+                const html = getCleanHTML(profileViews.fesya);
+                if (html && html.trim().length > 200) {
+                    localStorage.setItem('biodata_html_fesya', html);
+                }
+            }
 
-        if (!silent) {
-            showToast('✅ Semua perubahan biodata berhasil disimpan di browser!');
+            if (!silent) {
+                showToast('✅ Semua perubahan biodata berhasil disimpan di browser!');
+            }
+        } catch (err) {
+            console.warn('Gagal menyimpan ke LocalStorage:', err);
+            if (!silent) {
+                showToast('⚠️ Memori browser penuh, gunakan foto lebih kecil.');
+            }
         }
     }
 
@@ -250,9 +269,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // AUTO-SAVE OTOMATIS SEBELUM HALAMAN DI-REFRESH ATAU DITUTUP
+    // AUTO-SAVE OTOMATIS SEBELUM HALAMAN DI-REFRESH ATAU DITUTUP (DESKTOP & HP)
     window.addEventListener('beforeunload', () => {
-        if (isEditMode) {
+        if (isEditMode) saveCurrentData(true);
+    });
+    window.addEventListener('pagehide', () => {
+        if (isEditMode) saveCurrentData(true);
+    });
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden' && isEditMode) {
             saveCurrentData(true);
         }
     });
@@ -273,23 +298,53 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Kompresi foto otomatis agar ukuran sangat ringan (< 45KB) dan tidak melampaui kuota browser
+    function compressAndSetAvatar(file, targetImg) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            const tempImg = new Image();
+            tempImg.onload = function() {
+                const maxDim = 400;
+                let width = tempImg.width;
+                let height = tempImg.height;
+
+                if (width > maxDim || height > maxDim) {
+                    if (width > height) {
+                        height = Math.round((height * maxDim) / width);
+                        width = maxDim;
+                    } else {
+                        width = Math.round((width * maxDim) / height);
+                        height = maxDim;
+                    }
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(tempImg, 0, 0, width, height);
+
+                const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+                targetImg.src = compressedDataUrl;
+                saveCurrentData(true);
+                showToast('📷 Foto profil baru terpasang & otomatis tersimpan!');
+            };
+            tempImg.src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
     avatarInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                const activeProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
-                const activeView = profileViews[activeProfile];
-                if (activeView) {
-                    const img = activeView.querySelector('.avatar-img');
-                    if (img) {
-                        img.src = evt.target.result;
-                        saveCurrentData(true);
-                        showToast('📷 Foto profil baru terpasang & otomatis tersimpan!');
-                    }
+            const activeProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
+            const activeView = profileViews[activeProfile];
+            if (activeView) {
+                const img = activeView.querySelector('.avatar-img');
+                if (img) {
+                    compressAndSetAvatar(file, img);
                 }
-            };
-            reader.readAsDataURL(file);
+            }
         }
     });
 
