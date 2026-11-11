@@ -79,7 +79,7 @@ html[data-theme="dark"][data-active-profile="syifa"] {
     --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.6);
 }
 
-/* --- Dynamic Theme Accent for Fesya (Cornflower Blue Gradasi) --- */
+/* --- Dynamic Theme Accent for Febri (Cornflower Blue Gradasi) --- */
 html[data-active-profile="fesya"] {
     --bg-primary: #fbfdff;
     --bg-surface: #ffffff;

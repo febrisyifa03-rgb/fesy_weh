@@ -1,4 +1,4 @@
-# 🌸 Website Biodata Siswa: Syifa & Fesya (XII RPL 1)
+# 🌸 Website Biodata Siswa: Syifa & Febri (XII RPL 1)
 
 Website profil dan biodata diri interaktif dengan tampilan modern, fitur **Live In-Browser Edit (Diedit Langsung di Web)**, dan **Dual Profile Switcher**.
 
@@ -37,6 +37,6 @@ Kamu bisa mengedit isi biodata secara bebas kapan saja:
 ## 👥 Dua Profil Siswa
 
 - **Syifa Anggita Ramadani** (Aksen: *Elegan Maroon & Putih* 🍷🤍)
-- **Fesya Aulia** (Aksen: *Cornflower Blue Gradasi* 💙🌊)
+- **Febri** (Aksen: *Cornflower Blue Gradasi* 💙🌊)
 
 Tersedia tombol tab switcher di header untuk berganti profil secara instan.

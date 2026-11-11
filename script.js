@@ -1,7 +1,7 @@
 /**
- * BIODATA INTERAKTIF SISWA XII RPL 1 (SYIFA & FESYA)
+ * BIODATA INTERAKTIF SISWA XII RPL 1 (SYIFA & FEBRI)
  * Fitur:
- * 1. Switcher Profil Instan (Syifa & Fesya) dengan tema dinamis
+ * 1. Switcher Profil Instan (Syifa & Febri) dengan tema dinamis
  * 2. Mode Live Edit (Bisa edit teks langsung di web + upload foto)
  * 3. REAL-TIME AUTO-SAVE ke LocalStorage (Tidak hilang saat halaman di-refresh!)
  * 4. Dark / Light Mode Toggle
@@ -13,8 +13,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const htmlElement = document.documentElement;
 
     // =========================================================================
-    // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
+    // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE DENGAN CACHE VERSION
     // =========================================================================
+    const DATA_VERSION = 'v5_febri';
+    if (localStorage.getItem('biodata_data_version') !== DATA_VERSION) {
+        localStorage.removeItem('biodata_html_syifa');
+        localStorage.removeItem('biodata_html_fesya');
+        localStorage.setItem('biodata_data_version', DATA_VERSION);
+    }
+
     const profileViews = {
         syifa: document.getElementById('view-syifa'),
         fesya: document.getElementById('view-fesya')
@@ -31,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =========================================================================
-    // 2. PROFILE SWITCHER (SYIFA <-> FESYA)
+    // 2. PROFILE SWITCHER (SYIFA <-> FEBRI)
     // =========================================================================
     const profileTabs = document.querySelectorAll('.profile-tab-btn');
     const logoBadge = document.getElementById('logo-badge');
@@ -66,8 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (profileId === 'fesya') {
             if (logoBadge) logoBadge.textContent = 'F';
-            if (logoText) logoText.innerHTML = 'Fesya<span>.dev</span>';
-            document.title = 'Biodata Pribadi - Fesya Aulia (XII RPL 1)';
+            if (logoText) logoText.innerHTML = 'Febri<span>.dev</span>';
+            document.title = 'Biodata Pribadi - Febri (XII RPL 1)';
         } else {
             if (logoBadge) logoBadge.textContent = 'S';
             if (logoText) logoText.innerHTML = 'Syifa<span>.dev</span>';
