@@ -13,6 +13,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const htmlElement = document.documentElement;
 
     // =========================================================================
+    // 0. INISIALISASI FIREBASE (PROJECT: BIODATA-FESY)
+    // =========================================================================
+    const firebaseConfig = {
+        apiKey: "AIzaSyAwbcrtT3f0y7kkfXHWsdXUQo7BDDtwHxs",
+        authDomain: "biodata-fesy.firebaseapp.com",
+        projectId: "biodata-fesy",
+        storageBucket: "biodata-fesy.firebasestorage.app",
+        messagingSenderId: "528895519069",
+        appId: "1:528895519069:web:32522d86593791928a60b4"
+    };
+
+    let db = null;
+    if (typeof firebase !== 'undefined') {
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            if (firebase.firestore) {
+                db = firebase.firestore();
+            }
+            console.log("🔥 [Firebase] Terhubung ke project: biodata-fesy");
+        } catch (fbErr) {
+            console.info("🔥 [Firebase Note]:", fbErr.message);
+        }
+    }
+
+    // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
     const BUILD_VERSION = 'v2.3_ultra_premium_ui';
@@ -227,21 +254,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 return clone.innerHTML;
             }
 
+            let htmlSyifaClean = '';
+            let htmlFesyaClean = '';
+
             if (profileViews.syifa) {
                 const html = getCleanHTML(profileViews.syifa);
                 if (html && html.trim().length > 200) {
+                    htmlSyifaClean = html;
                     localStorage.setItem('biodata_html_syifa', html);
                 }
             }
             if (profileViews.fesya) {
                 const html = getCleanHTML(profileViews.fesya);
                 if (html && html.trim().length > 200) {
+                    htmlFesyaClean = html;
                     localStorage.setItem('biodata_html_fesya', html);
                 }
             }
 
+            // Sinkronisasi Online ke Cloud Firestore jika aktif
+            if (db && (htmlSyifaClean || htmlFesyaClean)) {
+                try {
+                    const batchData = {};
+                    if (htmlSyifaClean) batchData.syifa = htmlSyifaClean;
+                    if (htmlFesyaClean) batchData.fesya = htmlFesyaClean;
+                    batchData.updatedAt = new Date().toISOString();
+
+                    db.collection('biodata').doc('profiles').set(batchData, { merge: true })
+                        .catch(() => {});
+                } catch (e) {
+                    // Abaikan jika permission Firestore belum diatur di Console
+                }
+            }
+
             if (!silent) {
-                showToast('✅ Semua perubahan biodata berhasil disimpan di browser!');
+                showToast('✅ Semua perubahan biodata berhasil disimpan!');
             }
         } catch (err) {
             console.warn('Gagal menyimpan ke LocalStorage:', err);
