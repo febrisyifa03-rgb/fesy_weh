@@ -15,6 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
+    const BUILD_VERSION = 'v1.1_sumedang';
+    if (localStorage.getItem('biodata_build_version') !== BUILD_VERSION) {
+        localStorage.removeItem('biodata_html_syifa');
+        localStorage.removeItem('biodata_html_fesya');
+        localStorage.setItem('biodata_build_version', BUILD_VERSION);
+    }
+
     const profileViews = {
         syifa: document.getElementById('view-syifa'),
         fesya: document.getElementById('view-fesya')
