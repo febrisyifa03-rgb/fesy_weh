@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
-    const BUILD_VERSION = 'v1.2_syifa_lengkap';
+    const BUILD_VERSION = 'v1.3_sd_mandalaherang1';
     if (localStorage.getItem('biodata_build_version') !== BUILD_VERSION) {
         localStorage.removeItem('biodata_html_syifa');
         localStorage.removeItem('biodata_html_fesya');
