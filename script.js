@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
-    const BUILD_VERSION = 'v1.8_opaque_cards';
+    const BUILD_VERSION = 'v1.9_photo_assignment';
     if (localStorage.getItem('biodata_build_version') !== BUILD_VERSION) {
         localStorage.removeItem('biodata_html_syifa');
         localStorage.removeItem('biodata_html_fesya');
@@ -38,17 +38,17 @@ document.addEventListener('DOMContentLoaded', () => {
             profileViews.fesya.innerHTML = savedFesyaHTML;
         }
 
-        // Sinkronisasi foto asli (ganti placeholder unsplash lama secara otomatis)
+        // Sinkronisasi foto asli (Kerudung Biru = Syifa, Kerudung Coklat = Febri)
         if (profileViews.syifa) {
             const imgSyifa = profileViews.syifa.querySelector('.avatar-img');
-            if (imgSyifa && (imgSyifa.src.includes('unsplash.com') || !imgSyifa.src)) {
-                imgSyifa.src = 'images/syifa.jpg';
+            if (imgSyifa) {
+                imgSyifa.src = 'images/syifa.jpg?v=2';
             }
         }
         if (profileViews.fesya) {
             const imgFebri = profileViews.fesya.querySelector('.avatar-img');
-            if (imgFebri && (imgFebri.src.includes('unsplash.com') || !imgFebri.src)) {
-                imgFebri.src = 'images/febri.jpg';
+            if (imgFebri) {
+                imgFebri.src = 'images/febri.jpg?v=2';
             }
         }
     } catch (e) {
