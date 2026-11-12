@@ -2736,3 +2736,302 @@ body.editing-active .avatar-ring:hover::after {
         padding: 10px 14px;
     }
 }
+
+/* ==========================================================================
+   FITUR-FITUR LUCU & INTERAKTIF (CUTE FEATURES EDITION)
+   ========================================================================== */
+
+/* 1. Efek Ketukan/Klik Partikel Lucu (Tap Sparkles) */
+.cute-tap-particle {
+    position: fixed;
+    pointer-events: none;
+    user-select: none;
+    z-index: 99999;
+    font-size: 1.5rem;
+    will-change: transform, opacity;
+    animation: cuteParticleFloat 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes cuteParticleFloat {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.6) rotate(0deg);
+    }
+    50% {
+        opacity: 0.95;
+        transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% - 40px)) scale(1.2) rotate(var(--rot, 15deg));
+    }
+    100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--dx, 0px) * 1.5), calc(-50% - 80px)) scale(0.8) rotate(calc(var(--rot, 15deg) * 2));
+    }
+}
+
+/* 2. Avatar Speech Bubble Lucu saat Foto Diklik */
+.avatar-clickable {
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.avatar-clickable:hover {
+    transform: scale(1.05) rotate(2deg);
+}
+
+.avatar-clickable:active {
+    transform: scale(0.96);
+}
+
+.avatar-speech-bubble {
+    position: absolute;
+    top: -55px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffffff;
+    color: var(--text-primary);
+    padding: 10px 18px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12), 0 2px 8px var(--primary-glow);
+    border: 2px solid var(--border-color);
+    white-space: nowrap;
+    z-index: 20;
+    animation: popSpeech 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    pointer-events: none;
+}
+
+.avatar-speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #ffffff;
+}
+
+[data-theme="dark"] .avatar-speech-bubble {
+    background: #1e1b2e;
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="dark"] .avatar-speech-bubble::after {
+    border-top-color: #1e1b2e;
+}
+
+@keyframes popSpeech {
+    0% { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.7); }
+    100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+/* 3. Surprise Box & Pesan Keberuntungan Lucu */
+.cute-fortune-box {
+    background: linear-gradient(135deg, var(--bg-surface), var(--primary-light));
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 36px 32px;
+    text-align: center;
+    box-shadow: 0 10px 30px -5px var(--primary-glow);
+    position: relative;
+    overflow: hidden;
+}
+
+.cute-box-header {
+    margin-bottom: 24px;
+}
+
+.cute-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: var(--radius-full);
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    background: #fdf2f8;
+    color: #db2777;
+    border: 1px solid #fbcfe8;
+    margin-bottom: 12px;
+}
+
+html[data-active-profile="fesya"] .cute-badge {
+    background: #eff6ff;
+    color: #2563eb;
+    border-color: #bfdbfe;
+}
+
+.cute-fortune-title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    letter-spacing: -0.2px;
+}
+
+.cute-fortune-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.cute-envelope-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.cute-envelope-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 28px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 8px 24px var(--primary-glow);
+    transition: var(--transition);
+}
+
+.cute-envelope-btn:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 12px 30px var(--primary-glow);
+}
+
+.cute-envelope-btn:active {
+    transform: scale(0.97);
+}
+
+.envelope-icon {
+    font-size: 1.3rem;
+    animation: cuteWiggle 2s infinite ease-in-out;
+}
+
+@keyframes cuteWiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg) scale(1.1); }
+    75% { transform: rotate(10deg) scale(1.1); }
+}
+
+.cute-fortune-card {
+    max-width: 520px;
+    width: 100%;
+    margin-top: 12px;
+    background: var(--bg-surface);
+    border: 1.5px solid var(--border-color);
+    border-radius: 20px;
+    padding: 24px 28px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+    animation: fortuneUnfold 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes fortuneUnfold {
+    0% { opacity: 0; transform: translateY(16px) scale(0.95); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.fortune-quote-icon {
+    font-size: 1.6rem;
+    display: block;
+    margin-bottom: 8px;
+}
+
+#cute-fortune-text {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin-bottom: 10px;
+    font-style: italic;
+}
+
+.fortune-author {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--primary);
+    display: block;
+}
+
+/* 4. Floating Cheer Widget (Love & Star Booster) */
+.floating-cheer-widget {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    z-index: 85;
+}
+
+.cheer-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: var(--radius-full);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1.5px solid var(--border-color);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px var(--primary-glow);
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.cheer-btn:hover {
+    transform: translateY(-3px) scale(1.04);
+    border-color: var(--primary);
+    box-shadow: 0 12px 30px var(--primary-glow);
+}
+
+.cheer-btn:active {
+    transform: scale(0.95);
+}
+
+.cheer-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+    display: inline-block;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.cheer-btn:hover .cheer-icon {
+    transform: scale(1.3) rotate(12deg);
+}
+
+.cheer-counter {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+/* Responsif Mobile untuk Cheer Widget agar tidak bentrok dengan Mobile Bottom Nav */
+@media (max-width: 768px) {
+    .floating-cheer-widget {
+        bottom: 76px;
+        left: 16px;
+    }
+    .cheer-btn {
+        padding: 8px 14px;
+        font-size: 0.8rem;
+    }
+    .avatar-speech-bubble {
+        white-space: normal;
+        max-width: 240px;
+        top: -65px;
+        font-size: 0.8rem;
+        padding: 8px 14px;
+    }
+}

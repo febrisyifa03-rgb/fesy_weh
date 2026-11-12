@@ -117,7 +117,11 @@
                         <div class="hero-card-glow" aria-hidden="true"></div>
                         <div class="hero-corner-badge"><i class="fa-solid fa-crown"></i> VIP PASS</div>
                         <div class="hero-avatar-wrapper">
-                            <div class="avatar-ring">
+                            <!-- Bubble Ucapan Lucu saat Foto Diklik -->
+                            <div class="avatar-speech-bubble hidden" id="avatar-speech-bubble-syifa">
+                                <span class="speech-text">Hai kamu! Lagi liat biodata Syifa ya? 🍓✨</span>
+                            </div>
+                            <div class="avatar-ring avatar-clickable" title="Klik fotoku untuk menyapa! 💖">
                                 <img src="images/syifa.jpg?v=2" 
                                      alt="Foto Profil Syifa (Kerudung Biru)" 
                                      class="avatar-img">
@@ -289,7 +293,11 @@
                         <div class="hero-card-glow" aria-hidden="true"></div>
                         <div class="hero-corner-badge"><i class="fa-solid fa-star"></i> VIP PASS</div>
                         <div class="hero-avatar-wrapper">
-                            <div class="avatar-ring">
+                            <!-- Bubble Ucapan Lucu saat Foto Diklik -->
+                            <div class="avatar-speech-bubble hidden" id="avatar-speech-bubble-febri">
+                                <span class="speech-text">Halo kapten! Siap meluncur ke angkasa bareng Febri? 🚀⭐</span>
+                            </div>
+                            <div class="avatar-ring avatar-clickable" title="Klik fotoku untuk menyapa! ⭐">
                                 <img src="images/febri.jpg?v=2" 
                                      alt="Foto Profil Febri (Kerudung Coklat)" 
                                      class="avatar-img">
@@ -450,6 +458,31 @@
             </section>
         </div>
 
+        <!-- Fitur Lucu: Kotak Kejutan & Pesan Keberuntungan Siswa RPL -->
+        <div class="container" style="margin-bottom: 35px;">
+            <div class="cute-fortune-box">
+                <div class="cute-box-header">
+                    <span class="cute-badge"><i class="fa-solid fa-gift"></i> Surprise Box</span>
+                    <h3 class="cute-fortune-title">Pesan Manis & Keberuntungan Hari Ini 💌</h3>
+                    <p class="cute-fortune-subtitle">Klik amplop kejutan di bawah untuk membuka motivasi spesial dari Syifa & Febri!</p>
+                </div>
+                <div class="cute-envelope-wrapper">
+                    <button type="button" class="cute-envelope-btn" id="cute-fortune-btn" title="Klik untuk membuka pesan kejutan!">
+                        <span class="envelope-icon">💌</span>
+                        <span class="envelope-btn-text">Buka Pesan Kejutan</span>
+                        <span class="envelope-sparkle">✨</span>
+                    </button>
+                    <div class="cute-fortune-card hidden" id="cute-fortune-card">
+                        <div class="fortune-card-inner">
+                            <span class="fortune-quote-icon">🌸</span>
+                            <p id="cute-fortune-text">"Semangat terus belajarnya! Masa depan cerah sedang menunggu kita di depan."</p>
+                            <span class="fortune-author" id="cute-fortune-author">— Syifa & Febri (XII RPL 1)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Pesan Cepat / Info Kolaborasi -->
         <div class="container" style="margin-bottom: 50px;">
             <div class="quick-note-box">
@@ -461,6 +494,15 @@
             </div>
         </div>
     </main>
+
+    <!-- Fitur Lucu: Tombol Melayang "Kirim Semangat" (Love & Star Booster) -->
+    <div class="floating-cheer-widget" id="floating-cheer-widget">
+        <button type="button" class="cheer-btn" id="cheer-btn" title="Klik untuk mengirim cinta dan semangat!">
+            <span class="cheer-icon" id="cheer-icon">💖</span>
+            <span class="cheer-label" id="cheer-label">Beri Semangat</span>
+            <span class="cheer-counter" id="cheer-counter">0</span>
+        </button>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">

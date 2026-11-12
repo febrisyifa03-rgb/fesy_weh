@@ -176,6 +176,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (logoText) logoText.innerHTML = 'Syifa<span>.dev</span>';
             document.title = 'Biodata Pribadi - Syifa Anggita Ramadani (XII RPL 1)';
         }
+
+        if (typeof updateCheerWidget === 'function') {
+            updateCheerWidget(profileId);
+        }
     }
 
     // =========================================================================
@@ -719,6 +723,231 @@ document.addEventListener('DOMContentLoaded', () => {
         idCardBadge.addEventListener('touchmove', handleTilt, { passive: true });
         idCardBadge.addEventListener('touchend', resetTilt);
     }
+
+    // =========================================================================
+    // 8. FITUR-FITUR LUCU & INTERAKTIF (CUTE FEATURES EDITION)
+    // =========================================================================
+
+    // A. Efek Suara Chime Lucu (Synthesizer Web Audio API Murni - Ringan & Tanpa File)
+    function playCuteChime(type = 'bell') {
+        try {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+            const ctx = new AudioCtx();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            const now = ctx.currentTime;
+            let startFreq = 523.25; // C5 (Syifa Bell)
+            let endFreq = 783.99;   // G5
+            if (type === 'star') {
+                startFreq = 659.25; // E5 (Febri Star Chime)
+                endFreq = 987.77;   // B5
+            } else if (type === 'pop') {
+                startFreq = 440;
+                endFreq = 880;
+            }
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(startFreq, now);
+            osc.frequency.exponentialRampToValueAtTime(endFreq, now + 0.12);
+
+            gain.gain.setValueAtTime(0.08, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+            osc.start(now);
+            osc.stop(now + 0.35);
+        } catch (e) {}
+    }
+
+    // B. Efek Klik/Tap Partikel Lucu (Tap Sparkles)
+    const syifaEmojis = ['💖', '🎀', '🍓', '🌸', '✨', '🍫', '💕', '🍰', '🍒'];
+    const febriEmojis = ['⭐', '🚀', '🪐', '🌟', '☄️', '✨', '🎮', '👾', '🌍'];
+
+    function spawnCuteParticles(x, y, customEmojis = null) {
+        const currentProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
+        const pool = customEmojis || (currentProfile === 'fesya' ? febriEmojis : syifaEmojis);
+        const count = 4 + Math.floor(Math.random() * 3); // 4 - 6 partikel
+
+        for (let i = 0; i < count; i++) {
+            const el = document.createElement('span');
+            el.className = 'cute-tap-particle';
+            el.textContent = pool[Math.floor(Math.random() * pool.length)];
+
+            const dx = (Math.random() - 0.5) * 80; // sebar ke kiri / kanan
+            const rot = (Math.random() - 0.5) * 60; // rotasi
+
+            el.style.left = `${x}px`;
+            el.style.top = `${y}px`;
+            el.style.setProperty('--dx', `${dx}px`);
+            el.style.setProperty('--rot', `${rot}deg`);
+
+            document.body.appendChild(el);
+            setTimeout(() => {
+                if (el.parentNode) el.parentNode.removeChild(el);
+            }, 1000);
+        }
+    }
+
+    // Listener Ketukan di Layar
+    document.addEventListener('pointerdown', (e) => {
+        // Jangan spawn saat sedang mengetik teks di mode edit atau di input
+        if (e.target && (e.target.tagName === 'INPUT' || e.target.isContentEditable)) return;
+        spawnCuteParticles(e.clientX, e.clientY);
+    });
+
+    // C. Avatar Speech Bubble Lucu saat Foto Diklik
+    const syifaSpeechQuotes = [
+        "Hai kamu! Lagi liat biodata Syifa ya? 🍓✨",
+        "Semangat ya hari ini! Jangan lupa bahagia 💖",
+        "Calon CEO masa depan nih, aamiin! 🎀💼",
+        "Yuk saling support sesama anak XII RPL 1! 💻🌸",
+        "Kue coklat buat nemenin ngoding hari ini 🍫😋",
+        "Senyum dulu dong! Hari ini bakal menyenangkan ✨💕"
+    ];
+
+    const febriSpeechQuotes = [
+        "Halo kapten! Siap meluncur ke angkasa bareng Febri? 🚀🌌",
+        "Nanti sore gas main badminton gak nih? 🏸😎",
+        "Leveling up coding game! Keep pushing! 🎮⚡",
+        "Menuju cita-cita CEO hebat! Aamiin! ⭐🪐",
+        "Semangat terus kawan pejuang RPL 1! 💻🔥",
+        "Dengerin musik asik biar ngetik kode makin santai 🎵🎧"
+    ];
+
+    let speechBubbleTimer = null;
+
+    function handleAvatarClick(profileKey) {
+        const bubble = document.getElementById(profileKey === 'fesya' ? 'avatar-speech-bubble-febri' : 'avatar-speech-bubble-syifa');
+        if (!bubble) return;
+
+        const quotes = profileKey === 'fesya' ? febriSpeechQuotes : syifaSpeechQuotes;
+        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+
+        const textSpan = bubble.querySelector('.speech-text');
+        if (textSpan) textSpan.textContent = randomQuote;
+
+        bubble.classList.remove('hidden');
+        playCuteChime(profileKey === 'fesya' ? 'star' : 'bell');
+
+        clearTimeout(speechBubbleTimer);
+        speechBubbleTimer = setTimeout(() => {
+            bubble.classList.add('hidden');
+        }, 4000);
+    }
+
+    const avatarClickables = document.querySelectorAll('.avatar-clickable');
+    avatarClickables.forEach(ring => {
+        ring.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const currentProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
+            const rect = ring.getBoundingClientRect();
+            spawnCuteParticles(rect.left + rect.width / 2, rect.top + rect.height / 2);
+            handleAvatarClick(currentProfile);
+        });
+    });
+
+    // D. Kotak Kejutan & Pesan Keberuntungan Lucu
+    const cuteFortuneBtn = document.getElementById('cute-fortune-btn');
+    const cuteFortuneCard = document.getElementById('cute-fortune-card');
+    const cuteFortuneText = document.getElementById('cute-fortune-text');
+    const cuteFortuneAuthor = document.getElementById('cute-fortune-author');
+
+    const fortuneQuotes = [
+        { text: "Jangan pernah meremehkan setiap baris kode yang kamu tulis. Sukses besar dimulai dari 'Hello World' yang sederhana!", author: "— Syifa & Febri (XII RPL 1)" },
+        { text: "Hari ini keberuntunganmu 100%! Kesulitan apa pun pasti bisa kamu selesaikan dengan senyuman. 🌟", author: "— Syifa & Febri (XII RPL 1)" },
+        { text: "Istirahat sebentar, minum air putih, dan dengarkan lagu favoritmu. Otakmu butuh istirahat manis! 🍫", author: "— Syifa Fauziah (XII RPL 1)" },
+        { text: "Fokus ke tujuanmu! Kita berdua sama-sama berjuang menuju cita-cita menjadi CEO handal. 💼🚀", author: "— Febriani Isnaini (XII RPL 1)" },
+        { text: "Error dan bug bukan kegagalan, itu cuma tanda kalau kamu selangkah lebih dekat ke solusi terbaik! 💻✨", author: "— Semangat XII RPL 1" },
+        { text: "Kamu lebih hebat dari yang kamu kira. Tetap percaya diri dan terus melangkah! 💖", author: "— Syifa & Febri (XII RPL 1)" },
+        { text: "Game yang seru itu yang punya banyak rintangan, sama kayak hidup. Selesaikan setiap quest dengan bangga! 🎮", author: "— Febri (XII RPL 1)" },
+        { text: "Hari ini adalah hari yang manis! Luangkan waktu untuk mengapresiasi dirimu sendiri. 🌸🍓", author: "— Syifa (XII RPL 1)" }
+    ];
+
+    if (cuteFortuneBtn && cuteFortuneCard) {
+        cuteFortuneBtn.addEventListener('click', (e) => {
+            const random = fortuneQuotes[Math.floor(Math.random() * fortuneQuotes.length)];
+            if (cuteFortuneText) cuteFortuneText.textContent = `"${random.text}"`;
+            if (cuteFortuneAuthor) cuteFortuneAuthor.textContent = random.author;
+
+            cuteFortuneCard.classList.remove('hidden');
+            playCuteChime('bell');
+
+            const rect = cuteFortuneBtn.getBoundingClientRect();
+            spawnCuteParticles(rect.left + rect.width / 2, rect.top, ['💌', '✨', '🌸', '💖', '⭐', '🎉']);
+        });
+    }
+
+    // E. Floating Cute Cheer Booster Widget
+    const cheerBtn = document.getElementById('cheer-btn');
+    const cheerIcon = document.getElementById('cheer-icon');
+    const cheerLabel = document.getElementById('cheer-label');
+    const cheerCounter = document.getElementById('cheer-counter');
+
+    function getCheerCount(profileId) {
+        return parseInt(localStorage.getItem(`cheer_count_${profileId}`) || '12', 10);
+    }
+
+    function setCheerCount(profileId, val) {
+        try {
+            localStorage.setItem(`cheer_count_${profileId}`, val);
+            if (db) {
+                db.collection('biodata').doc('cheers').set({
+                    [profileId]: val,
+                    lastCheer: new Date().toISOString()
+                }, { merge: true }).catch(() => {});
+            }
+        } catch(e) {}
+    }
+
+    function updateCheerWidget(profileId) {
+        if (!cheerBtn) return;
+        const isFebri = profileId === 'fesya';
+        if (cheerIcon) cheerIcon.textContent = isFebri ? '⭐' : '💖';
+        if (cheerLabel) cheerLabel.textContent = isFebri ? 'Beri Bintang' : 'Kirim Semangat';
+        if (cheerCounter) cheerCounter.textContent = getCheerCount(profileId);
+    }
+
+    // Ambil data awal cheer dari Firebase jika ada
+    if (db) {
+        db.collection('biodata').doc('cheers').get().then(doc => {
+            if (doc.exists) {
+                const data = doc.data();
+                if (data.syifa) localStorage.setItem('cheer_count_syifa', data.syifa);
+                if (data.fesya) localStorage.setItem('cheer_count_fesya', data.fesya);
+                const currentProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
+                updateCheerWidget(currentProfile);
+            }
+        }).catch(() => {});
+    }
+
+    if (cheerBtn) {
+        cheerBtn.addEventListener('click', (e) => {
+            const currentProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
+            const isFebri = currentProfile === 'fesya';
+            let currentVal = getCheerCount(currentProfile);
+            currentVal += 1;
+            setCheerCount(currentProfile, currentVal);
+
+            if (cheerCounter) cheerCounter.textContent = currentVal;
+            playCuteChime(isFebri ? 'star' : 'bell');
+
+            const rect = cheerBtn.getBoundingClientRect();
+            spawnCuteParticles(
+                rect.left + rect.width / 2, 
+                rect.top, 
+                isFebri ? ['⭐', '🌟', '🚀', '✨', '🪐'] : ['💖', '💕', '🎀', '🍓', '✨']
+            );
+
+            showToast(isFebri ? '⭐ Terima kasih bintangnya! Semangat! 🚀' : '💖 Terima kasih cintanya! Semangat! 🌸');
+        });
+    }
+
+    // Inisialisasi tampilan awal cheer widget
+    const initProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
+    updateCheerWidget(initProfile);
 
     console.log(
         "%c✨ Website Biodata Interaktif Siap Digunakan! ✨\n%cReal-Time Auto-Save aktif: Semua editan tidak akan hilang saat di-refresh.",
