@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
-    const BUILD_VERSION = 'v1.9_photo_assignment';
+    const BUILD_VERSION = 'v2.0_navigation_fixed';
     if (localStorage.getItem('biodata_build_version') !== BUILD_VERSION) {
         localStorage.removeItem('biodata_html_syifa');
         localStorage.removeItem('biodata_html_fesya');
@@ -409,37 +409,47 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =========================================================================
-    // 6. NAVIGASI HALUS ANTARA DESKTOP & MOBILE BOTTOM BAR
+    // 6. NAVIGASI HALUS UNTUK SEMUA LINK & TOMBOL (#personal-info, #contact, dll.)
     // =========================================================================
     const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-item');
 
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            const targetHref = link.getAttribute('href');
-            if (!targetHref || !targetHref.startsWith('#')) return;
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('a[href^="#"]');
+        if (!link) return;
 
+        const targetHref = link.getAttribute('href');
+        if (!targetHref || targetHref === '#' || targetHref === '#about-top') return;
+
+        const sectionTarget = targetHref.replace('#', '').replace('-syifa', '').replace('-febri', '');
+        const activeProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
+        const activeView = profileViews[activeProfile];
+        if (!activeView) return;
+
+        const targetSection = activeView.querySelector(`#${sectionTarget}-${activeProfile}`) ||
+                              activeView.querySelector(`#${sectionTarget}`) ||
+                              activeView.querySelector(`section.section-${sectionTarget}`) ||
+                              findSectionByTopic(activeView, sectionTarget);
+
+        if (targetSection) {
             e.preventDefault();
-            const sectionTarget = targetHref.replace('#', '');
+            const headerOffset = 85;
+            const elementPosition = targetSection.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
-            const activeProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
-            const activeView = profileViews[activeProfile];
-            if (!activeView) return;
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
 
-            const targetSection = activeView.querySelector(`#${sectionTarget}`) || 
-                                  activeView.querySelector(`section.${sectionTarget}-section`) ||
-                                  findSectionByTopic(activeView, sectionTarget);
-
-            if (targetSection) {
-                const headerOffset = 80;
-                const elementPosition = targetSection.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                });
+            // Efek visual lembut sorotan saat tiba di kartu data diri
+            const card = targetSection.querySelector('.info-card, .timeline, .contact-card-grid');
+            if (card) {
+                card.classList.add('section-highlight');
+                setTimeout(() => {
+                    card.classList.remove('section-highlight');
+                }, 1000);
             }
-        });
+        }
     });
 
     function findSectionByTopic(container, topic) {
