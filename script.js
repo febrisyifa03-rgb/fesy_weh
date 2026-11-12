@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
-    const BUILD_VERSION = 'v2.4_cute_features_fix';
+    const BUILD_VERSION = 'v2.5_experience_and_music';
     if (localStorage.getItem('biodata_build_version') !== BUILD_VERSION) {
         localStorage.removeItem('biodata_html_syifa');
         localStorage.removeItem('biodata_html_fesya');
@@ -253,6 +253,17 @@ document.addEventListener('DOMContentLoaded', () => {
         '.timeline-school',
         '.timeline-major',
         '.timeline-year',
+        '.experience-role',
+        '.experience-school',
+        '.experience-desc',
+        '.experience-tag-pill',
+        '.experience-period',
+        '.tag',
+        '.track-title',
+        '.track-artist',
+        '.track-genre-pill',
+        '.now-playing-title',
+        '.now-playing-artist',
         '.contact-handle',
         '.subsection-title',
         '.section-title',
@@ -792,12 +803,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Listener Ketukan di Layar (Hanya saat klik selesai, tidak mengganggu scroll di HP)
-    document.addEventListener('click', (e) => {
-        if (!e.clientX && !e.clientY) return;
-        if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable)) return;
-        spawnCuteParticles(e.clientX, e.clientY);
-    });
+
 
     // C. Avatar Speech Bubble Lucu saat Foto Diklik
     const syifaSpeechQuotes = [
@@ -901,6 +907,123 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCheerWidget(initProfile);
 
     // =========================================================================
+    // 9. PEMUTAR MUSIK FAVORIT & SYNTHESIZER MELODI INTERAKTIF
+    // =========================================================================
+    const noteFreqs = {
+        'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23, 'F#4': 369.99,
+        'G4': 392.00, 'G#4': 415.30, 'A4': 440.00, 'B4': 493.88,
+        'C5': 523.25, 'C#5': 554.37, 'D5': 587.33, 'E5': 659.25,
+        'F5': 698.46, 'G5': 783.99, 'A5': 880.00, 'B5': 987.77
+    };
+
+    let activeMusicAudioCtx = null;
+    let musicStopTimer = null;
+
+    function playTrackMelody(notesStr) {
+        try {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+            if (activeMusicAudioCtx) {
+                try { activeMusicAudioCtx.close(); } catch(e){}
+            }
+            activeMusicAudioCtx = new AudioCtx();
+            const ctx = activeMusicAudioCtx;
+            const notes = (notesStr || 'C4,E4,G4,C5').split(',');
+
+            notes.forEach((note, idx) => {
+                const freq = noteFreqs[note.trim()] || 440;
+                const startTime = ctx.currentTime + (idx * 0.28);
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, startTime);
+
+                gain.gain.setValueAtTime(0, startTime);
+                gain.gain.linearRampToValueAtTime(0.12, startTime + 0.04);
+                gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.65);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start(startTime);
+                osc.stop(startTime + 0.7);
+            });
+        } catch(e) {
+            console.warn("Audio synth info:", e);
+        }
+    }
+
+    function handleMusicTrackClick(trackItem) {
+        if (!trackItem) return;
+        const playerCard = trackItem.closest('.music-card-player');
+        if (!playerCard) return;
+
+        const profile = trackItem.dataset.profile || (htmlElement.getAttribute('data-active-profile') || 'syifa');
+        const title = trackItem.dataset.title || 'Lagu Pilihan';
+        const artist = trackItem.dataset.artist || 'Artis';
+        const notes = trackItem.dataset.notes || 'C4,E4,G4,C5';
+
+        const isCurrentlyPlaying = playerCard.classList.contains('playing') && trackItem.classList.contains('active');
+
+        // Reset all tracks in this player
+        const allTracks = playerCard.querySelectorAll('.music-track-item');
+        allTracks.forEach(t => {
+            t.classList.remove('active');
+            const playIcon = t.querySelector('.track-play-btn i');
+            if (playIcon) playIcon.className = 'fa-solid fa-play';
+        });
+
+        const statusEl = document.getElementById(`music-status-${profile === 'fesya' ? 'febri' : 'syifa'}`);
+        const titleEl = document.getElementById(`now-title-${profile === 'fesya' ? 'febri' : 'syifa'}`);
+        const artistEl = document.getElementById(`now-artist-${profile === 'fesya' ? 'febri' : 'syifa'}`);
+        const vinylEl = document.getElementById(`vinyl-${profile === 'fesya' ? 'febri' : 'syifa'}`);
+
+        if (isCurrentlyPlaying) {
+            // Pause
+            playerCard.classList.remove('playing');
+            if (vinylEl) vinylEl.classList.remove('playing');
+            if (statusEl) statusEl.textContent = 'Jeda';
+            if (activeMusicAudioCtx) {
+                try { activeMusicAudioCtx.close(); } catch(e){}
+            }
+            showToast('⏸️ Pemutaran musik dijeda');
+            return;
+        }
+
+        // Set as active
+        trackItem.classList.add('active');
+        const playBtnIcon = trackItem.querySelector('.track-play-btn i');
+        if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-pause';
+
+        playerCard.classList.add('playing');
+        if (vinylEl) vinylEl.classList.add('playing');
+
+        if (titleEl) titleEl.textContent = title;
+        if (artistEl) artistEl.textContent = artist;
+        if (statusEl) statusEl.textContent = 'Sedang Diputar 🎵';
+
+        // Play synthetic melody notes
+        playTrackMelody(notes);
+
+        // Spawn cute music particles over vinyl
+        if (vinylEl) {
+            const rect = vinylEl.getBoundingClientRect();
+            spawnCuteParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, ['🎶', '🎵', '🎧', '✨', '💫']);
+        }
+
+        showToast(`🎵 Memutar: ${title} (${artist})`);
+
+        clearTimeout(musicStopTimer);
+        musicStopTimer = setTimeout(() => {
+            if (playerCard) playerCard.classList.remove('playing');
+            if (vinylEl) vinylEl.classList.remove('playing');
+            if (statusEl) statusEl.textContent = 'Selesai Diputar';
+            if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-play';
+        }, 5000);
+    }
+
+    // =========================================================================
     // F. UNIFIED EVENT DELEGATION UNTUK SEMUA ELEMEN LUCU & KLIK
     // =========================================================================
     document.addEventListener('click', (e) => {
@@ -959,7 +1082,17 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 4. Klik Sembarang Tempat untuk Hujan Partikel Lucu
+        // 4. Klik Item Playlist Musik / Tombol Play Musik
+        const trackTrigger = e.target.closest('.music-track-item, .track-play-btn');
+        if (trackTrigger) {
+            const item = trackTrigger.closest('.music-track-item');
+            if (item) {
+                handleMusicTrackClick(item);
+                return;
+            }
+        }
+
+        // 5. Klik Sembarang Tempat untuk Hujan Partikel Lucu
         if (!e.clientX && !e.clientY) return;
         if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable)) return;
         spawnCuteParticles(e.clientX, e.clientY);
