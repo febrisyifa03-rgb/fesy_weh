@@ -11,6 +11,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const htmlElement = document.documentElement;
+    let isEditMode = false;
 
     // =========================================================================
     // 0. INISIALISASI FIREBASE (PROJECT: BIODATA-FESY)
@@ -80,6 +81,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     } catch (e) {
         console.warn('Gagal membaca LocalStorage:', e);
+    }
+
+    // =========================================================================
+    // 1.1 REAL-TIME SYNC FIREBASE FIRESTORE (SINKRONISASI HP <-> LAPTOP OTOMATIS)
+    // =========================================================================
+    if (db) {
+        try {
+            db.collection('biodata').doc('profiles').onSnapshot((doc) => {
+                if (doc && doc.exists) {
+                    const data = doc.data();
+                    // Jangan timpa saat pengguna sedang aktif mengetik di mode edit
+                    if (isEditMode) return;
+
+                    if (data && data.syifa && data.syifa.trim().length > 200 && profileViews.syifa) {
+                        profileViews.syifa.innerHTML = data.syifa;
+                        const imgSyifa = profileViews.syifa.querySelector('.avatar-img');
+                        if (imgSyifa && !imgSyifa.src.startsWith('data:')) {
+                            imgSyifa.src = 'images/syifa.jpg?v=2';
+                        }
+                        try { localStorage.setItem('biodata_html_syifa', data.syifa); } catch(e){}
+                    }
+
+                    if (data && data.fesya && data.fesya.trim().length > 200 && profileViews.fesya) {
+                        profileViews.fesya.innerHTML = data.fesya;
+                        const imgFebri = profileViews.fesya.querySelector('.avatar-img');
+                        if (imgFebri && !imgFebri.src.startsWith('data:')) {
+                            imgFebri.src = 'images/febri.jpg?v=2';
+                        }
+                        try { localStorage.setItem('biodata_html_fesya', data.fesya); } catch(e){}
+                    }
+
+                    console.log("🔥 [Firebase Real-Time Sync] Biodata berhasil disinkronkan secara online!");
+                }
+            }, (error) => {
+                console.info("Firestore live listener info:", error.message);
+            });
+        } catch (syncErr) {
+            console.warn("Firestore live listener exception:", syncErr);
+        }
     }
 
     // =========================================================================
@@ -195,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const toast = document.getElementById('toast');
     const toastMsg = document.getElementById('toast-msg');
 
-    let isEditMode = false;
+    isEditMode = false;
 
     // Elemen teks yang dapat diedit langsung
     const editableSelectors = [
