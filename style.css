@@ -1438,13 +1438,6 @@ html[data-active-profile="fesya"] .avatar-ring {
     color: #ffffff;
     transform: translateY(-2px);
 }
-    transition: var(--transition);
-}
-
-.back-to-top a:hover {
-    background-color: var(--primary);
-    color: #ffffff;
-}
 
 /* --- Mobile Bottom Navigation (Hidden on Desktop by Default) --- */
 .mobile-bottom-nav {

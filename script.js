@@ -831,30 +831,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (textSpan) textSpan.textContent = randomQuote;
 
         bubble.classList.remove('hidden');
+        bubble.style.display = 'block';
         playCuteChime(profileKey === 'fesya' ? 'star' : 'bell');
 
         clearTimeout(speechBubbleTimer);
         speechBubbleTimer = setTimeout(() => {
             bubble.classList.add('hidden');
+            bubble.style.display = 'none';
         }, 4000);
     }
 
-    const avatarClickables = document.querySelectorAll('.avatar-clickable, .avatar-ring, .avatar-img');
-    avatarClickables.forEach(target => {
-        target.addEventListener('click', (e) => {
-            const currentProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
-            const rect = target.getBoundingClientRect();
-            spawnCuteParticles(rect.left + rect.width / 2, rect.top + rect.height / 2);
-            handleAvatarClick(currentProfile);
-        });
-    });
-
     // D. Kotak Kejutan & Pesan Keberuntungan Lucu
-    const cuteFortuneBtn = document.getElementById('cute-fortune-btn');
-    const cuteFortuneCard = document.getElementById('cute-fortune-card');
-    const cuteFortuneText = document.getElementById('cute-fortune-text');
-    const cuteFortuneAuthor = document.getElementById('cute-fortune-author');
-
     const fortuneQuotes = [
         { text: "Jangan pernah meremehkan setiap baris kode yang kamu tulis. Sukses besar dimulai dari 'Hello World' yang sederhana!", author: "— Syifa & Febri (XII RPL 1)" },
         { text: "Hari ini keberuntunganmu 100%! Kesulitan apa pun pasti bisa kamu selesaikan dengan senyuman. 🌟", author: "— Syifa & Febri (XII RPL 1)" },
@@ -866,22 +853,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { text: "Hari ini adalah hari yang manis! Luangkan waktu untuk mengapresiasi dirimu sendiri. 🌸🍓", author: "— Syifa (XII RPL 1)" }
     ];
 
-    if (cuteFortuneBtn && cuteFortuneCard) {
-        cuteFortuneBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const random = fortuneQuotes[Math.floor(Math.random() * fortuneQuotes.length)];
-            if (cuteFortuneText) cuteFortuneText.textContent = `"${random.text}"`;
-            if (cuteFortuneAuthor) cuteFortuneAuthor.textContent = random.author;
-
-            cuteFortuneCard.classList.remove('hidden');
-            playCuteChime('bell');
-
-            const rect = cuteFortuneBtn.getBoundingClientRect();
-            spawnCuteParticles(rect.left + rect.width / 2, rect.top, ['💌', '✨', '🌸', '💖', '⭐', '🎉']);
-        });
-    }
-
-    // E. Floating Cute Cheer Booster Widget
+    // E. Floating Cute Cheer Booster Widget Helper
     function getCheerCount(profileId) {
         return parseInt(localStorage.getItem(`cheer_count_${profileId}`) || '12', 10);
     }
@@ -924,10 +896,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }).catch(() => {});
     }
 
-    const cheerBtn = document.getElementById('cheer-btn');
-    if (cheerBtn) {
-        cheerBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
+    // Inisialisasi tampilan awal cheer widget
+    const initProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
+    updateCheerWidget(initProfile);
+
+    // =========================================================================
+    // F. UNIFIED EVENT DELEGATION UNTUK SEMUA ELEMEN LUCU & KLIK
+    // =========================================================================
+    document.addEventListener('click', (e) => {
+        // 1. Klik Foto Avatar Profil
+        const avatarTarget = e.target.closest('.avatar-ring, .avatar-clickable');
+        if (avatarTarget) {
+            const currentProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
+            const rect = avatarTarget.getBoundingClientRect();
+            spawnCuteParticles(rect.left + rect.width / 2, rect.top + rect.height / 2);
+            handleAvatarClick(currentProfile);
+            return;
+        }
+
+        // 2. Klik Tombol Buka Amplop Kejutan
+        const fortuneBtn = e.target.closest('#cute-fortune-btn, .cute-envelope-btn');
+        if (fortuneBtn) {
+            const random = fortuneQuotes[Math.floor(Math.random() * fortuneQuotes.length)];
+            const textEl = document.getElementById('cute-fortune-text');
+            const authorEl = document.getElementById('cute-fortune-author');
+            const cardEl = document.getElementById('cute-fortune-card');
+
+            if (textEl) textEl.textContent = `"${random.text}"`;
+            if (authorEl) authorEl.textContent = random.author;
+            if (cardEl) {
+                cardEl.classList.remove('hidden');
+                cardEl.style.display = 'block';
+            }
+
+            playCuteChime('bell');
+            const rect = fortuneBtn.getBoundingClientRect();
+            spawnCuteParticles(rect.left + rect.width / 2, rect.top, ['💌', '✨', '🌸', '💖', '⭐', '🎉']);
+            return;
+        }
+
+        // 3. Klik Tombol Cheer Booster (Pojok Bawah)
+        const cheerTrigger = e.target.closest('#cheer-btn, .cheer-btn');
+        if (cheerTrigger) {
             const currentProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
             const isFebri = currentProfile === 'fesya';
             let currentVal = getCheerCount(currentProfile);
@@ -938,7 +948,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (counterEl) counterEl.textContent = currentVal;
             playCuteChime(isFebri ? 'star' : 'bell');
 
-            const rect = cheerBtn.getBoundingClientRect();
+            const rect = cheerTrigger.getBoundingClientRect();
             spawnCuteParticles(
                 rect.left + rect.width / 2, 
                 rect.top, 
@@ -946,12 +956,14 @@ document.addEventListener('DOMContentLoaded', () => {
             );
 
             showToast(isFebri ? '⭐ Terima kasih bintangnya! Semangat! 🚀' : '💖 Terima kasih cintanya! Semangat! 🌸');
-        });
-    }
+            return;
+        }
 
-    // Inisialisasi tampilan awal cheer widget
-    const initProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
-    updateCheerWidget(initProfile);
+        // 4. Klik Sembarang Tempat untuk Hujan Partikel Lucu
+        if (!e.clientX && !e.clientY) return;
+        if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable)) return;
+        spawnCuteParticles(e.clientX, e.clientY);
+    });
 
     console.log(
         "%c✨ Website Biodata Interaktif Siap Digunakan! ✨\n%cReal-Time Auto-Save aktif: Semua editan tidak akan hilang saat di-refresh.",
