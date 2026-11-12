@@ -1931,7 +1931,7 @@ body.editing-active .avatar-ring:hover::after {
 }
 
 /* ==========================================================================
-   POP-UP MODAL: KARTU TANDA PELAJAR (STUDENT ID CARD)
+   POP-UP MODAL: KARTU TANDA PELAJAR ULTRA PREMIUM (VIP STUDENT PASS)
    ========================================================================== */
 .idcard-modal-overlay {
     position: fixed;
@@ -1939,17 +1939,18 @@ body.editing-active .avatar-ring:hover::after {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(10, 15, 25, 0.78);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(8, 12, 22, 0.82);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     z-index: 10000;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 24px;
     opacity: 1;
     visibility: visible;
-    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s;
+    perspective: 1200px;
 }
 
 .idcard-modal-overlay.hidden {
@@ -1960,198 +1961,302 @@ body.editing-active .avatar-ring:hover::after {
 
 .idcard-modal-container {
     position: relative;
-    max-width: 490px;
+    max-width: 520px;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    animation: popIdCard 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.25) forwards;
+    animation: popIdCardPremium 0.5s cubic-bezier(0.2, 0.9, 0.28, 1.25) forwards;
 }
 
-@keyframes popIdCard {
+@keyframes popIdCardPremium {
     from {
         opacity: 0;
-        transform: scale(0.85) translateY(30px);
+        transform: scale(0.82) translateY(40px) rotateX(8deg);
     }
     to {
         opacity: 1;
-        transform: scale(1) translateY(0);
+        transform: scale(1) translateY(0) rotateX(0deg);
     }
 }
 
-/* Tombol Close X */
+/* Tombol Close X Bulat Mewah */
 .idcard-close-btn {
     position: absolute;
-    top: -14px;
-    right: 0px;
-    width: 40px;
-    height: 40px;
+    top: -16px;
+    right: -4px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    background: #ffffff;
-    color: #17243c;
-    border: none;
+    background: linear-gradient(135deg, #ffffff, #e5e7eb);
+    color: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.8);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.15rem;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
-    transition: var(--transition);
-    z-index: 10;
+    font-size: 1.2rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    transition: transform 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+    z-index: 25;
 }
 
 .idcard-close-btn:hover {
-    transform: scale(1.1) rotate(90deg);
-    background: #f43f5e;
+    transform: scale(1.12) rotate(90deg);
+    background: #e11d48;
     color: #ffffff;
 }
 
-/* Tali Gantungan ID Card (Lanyard) */
+/* Tali Gantungan Lanyard 3D & Klip Logam */
 .idcard-lanyard-hanger {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: -10px;
-    z-index: 2;
+    margin-bottom: -12px;
+    z-index: 15;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
 }
 
 .lanyard-ribbon {
-    width: 38px;
+    width: 44px;
     height: 38px;
-    background: linear-gradient(180deg, #1f2937, #374151);
-    border-radius: 4px 4px 0 0;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+    background: repeating-linear-gradient(
+        45deg,
+        #1e293b,
+        #1e293b 8px,
+        #0f172a 8px,
+        #0f172a 16px
+    );
+    border-radius: 6px 6px 0 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: none;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.6);
 }
 
 .lanyard-metal-clip {
-    width: 24px;
-    height: 14px;
-    background: linear-gradient(180deg, #e5e7eb, #9ca3af);
-    border-radius: 3px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    width: 28px;
+    height: 16px;
+    background: linear-gradient(180deg, #f3f4f6 0%, #d1d5db 40%, #9ca3af 70%, #4b5563 100%);
+    border-radius: 4px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.35);
 }
 
 .lanyard-card-slot {
-    width: 14px;
-    height: 6px;
-    background: #111827;
+    width: 16px;
+    height: 7px;
+    background: #020617;
     border-radius: 4px;
-    margin-top: -2px;
+    margin-top: -3px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-/* Badan Kartu Pelajar (ID Card Badge) */
+/* ==========================================================================
+   BADGE KARTU UTAMA (PREMIUM EDITION)
+   ========================================================================== */
 .idcard-badge {
+    position: relative;
     width: 100%;
-    background: #ffffff;
-    border-radius: 22px;
+    border-radius: 26px;
     overflow: hidden;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2);
     display: flex;
     flex-direction: column;
-    transition: var(--transition);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+    transform-style: preserve-3d;
+}
+
+/* Lapisan Efek Hologram Berkilau */
+.idcard-hologram-shimmer {
+    position: absolute;
+    inset: -120%;
+    background: linear-gradient(
+        115deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.04) 25%,
+        rgba(255, 255, 255, 0.25) 45%,
+        rgba(254, 240, 138, 0.3) 50%,
+        rgba(147, 197, 253, 0.3) 55%,
+        rgba(255, 255, 255, 0.15) 65%,
+        transparent 100%
+    );
+    pointer-events: none;
+    z-index: 20;
+    transform: rotate(25deg);
+    opacity: 0.55;
+    transition: transform 0.8s ease, opacity 0.5s ease;
+}
+
+.idcard-badge:hover .idcard-hologram-shimmer {
+    transform: rotate(25deg) translateY(35%) translateX(25%);
+    opacity: 0.85;
+}
+
+/* Tema Syifa: Imperial Ruby & Gold Edition */
+.idcard-badge[data-idcard-theme="syifa"] {
+    background: 
+        radial-gradient(circle at 10% 20%, rgba(128, 0, 32, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
+        #ffffff;
+    border: 2px solid rgba(212, 175, 55, 0.7);
+    box-shadow: 
+        0 28px 70px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.8),
+        0 12px 45px rgba(128, 0, 32, 0.28);
+}
+
+.idcard-badge[data-idcard-theme="syifa"] .idcard-header {
+    background: linear-gradient(135deg, #4f0012 0%, #800020 50%, #9e1433 100%);
+    border-bottom: 3.5px solid #d4af37;
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.idcard-badge[data-idcard-theme="syifa"] .idcard-school-icon {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(255, 255, 255, 0.2));
+    border: 1px solid rgba(212, 175, 55, 0.6);
+    color: #fef08a;
+}
+
+.idcard-badge[data-idcard-theme="syifa"] .vip-pill {
+    background: linear-gradient(135deg, #fef08a, #d4af37);
+    color: #450a0a;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
+}
+
+.idcard-badge[data-idcard-theme="syifa"] .idcard-photo-frame {
+    border: 3px solid #ffffff;
+    outline: 2.5px solid #d4af37;
+    box-shadow: 0 8px 20px rgba(128, 0, 32, 0.25);
+}
+
+.idcard-badge[data-idcard-theme="syifa"] .idcard-nis-label {
+    color: #800020;
+}
+
+/* Tema Febri: Cosmic Sapphire & Platinum Edition */
+.idcard-badge[data-idcard-theme="febri"] {
+    background: 
+        radial-gradient(circle at 10% 20%, rgba(59, 113, 219, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(100, 149, 237, 0.08) 0%, transparent 40%),
+        #ffffff;
+    border: 2px solid rgba(126, 169, 248, 0.8);
+    box-shadow: 
+        0 28px 70px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.8),
+        0 12px 45px rgba(59, 113, 219, 0.32);
+}
+
+.idcard-badge[data-idcard-theme="febri"] .idcard-header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #6495ed 100%);
+    border-bottom: 3.5px solid #93c5fd;
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.idcard-badge[data-idcard-theme="febri"] .idcard-school-icon {
+    background: linear-gradient(135deg, rgba(147, 197, 253, 0.35), rgba(255, 255, 255, 0.2));
+    border: 1px solid rgba(147, 197, 253, 0.7);
+    color: #e0f2fe;
+}
+
+.idcard-badge[data-idcard-theme="febri"] .vip-pill {
+    background: linear-gradient(135deg, #e0f2fe, #93c5fd);
+    color: #0c4a6e;
+    box-shadow: 0 2px 8px rgba(100, 149, 237, 0.4);
+}
+
+.idcard-badge[data-idcard-theme="febri"] .idcard-photo-frame {
+    border: 3px solid #ffffff;
+    outline: 2.5px solid #6495ed;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+}
+
+.idcard-badge[data-idcard-theme="febri"] .idcard-nis-label {
+    color: #1d4ed8;
 }
 
 /* Header Kartu */
 .idcard-header {
-    padding: 16px 20px;
+    padding: 18px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 14px;
     color: #ffffff;
-}
-
-/* Header Tema Syifa (Maroon) */
-.idcard-badge[data-idcard-theme="syifa"] .idcard-header {
-    background: linear-gradient(135deg, #800020, #a81c3c);
-    border-bottom: 3px solid #d4af37;
-}
-
-/* Header Tema Febri (Cornflower Blue) */
-.idcard-badge[data-idcard-theme="febri"] .idcard-header {
-    background: linear-gradient(135deg, #3b71db, #6495ed);
-    border-bottom: 3px solid #7ea9f8;
+    position: relative;
+    z-index: 5;
 }
 
 .idcard-school-brand {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
 }
 
 .idcard-school-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.2);
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.25rem;
-    color: #ffffff;
+    font-size: 1.45rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
 }
 
 .idcard-school-meta h4 {
-    font-size: 0.92rem;
+    font-size: 1.02rem;
     font-weight: 800;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
     margin: 0;
     line-height: 1.2;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .idcard-school-meta p {
-    font-size: 0.7rem;
-    opacity: 0.9;
-    margin: 2px 0 0;
-    letter-spacing: 0.3px;
+    font-size: 0.74rem;
+    opacity: 0.95;
+    margin: 3px 0 0;
+    letter-spacing: 0.4px;
+    font-weight: 600;
 }
 
-.idcard-badge-pill {
-    font-size: 0.65rem;
+.vip-pill {
+    font-size: 0.7rem;
     font-weight: 800;
-    background: rgba(255, 255, 255, 0.25);
-    padding: 4px 10px;
+    padding: 5px 12px;
     border-radius: 999px;
-    letter-spacing: 1px;
+    letter-spacing: 0.8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     white-space: nowrap;
 }
 
-/* Konten ID Card */
+/* Konten Utama Kartu */
 .idcard-content {
-    padding: 20px;
+    padding: 24px;
     display: flex;
-    gap: 18px;
-    background: #ffffff;
-    color: #1f2937;
+    gap: 22px;
+    position: relative;
+    z-index: 5;
 }
 
-/* Kolom Kiri: Foto & Chip */
+/* Kolom Kiri: Foto, EMV Chip & NFC */
 .idcard-left-column {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     flex-shrink: 0;
 }
 
 .idcard-photo-frame {
-    width: 110px;
-    height: 140px;
-    border-radius: 14px;
+    position: relative;
+    width: 124px;
+    height: 156px;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
-    border: 3px solid #ffffff;
-    outline: 2px solid #e5e7eb;
-    background: #f3f4f6;
-}
-
-.idcard-badge[data-idcard-theme="syifa"] .idcard-photo-frame {
-    outline-color: #800020;
-}
-
-.idcard-badge[data-idcard-theme="febri"] .idcard-photo-frame {
-    outline-color: #6495ed;
+    background: #e2e8f0;
 }
 
 .idcard-photo-img {
@@ -2161,24 +2266,72 @@ body.editing-active .avatar-ring:hover::after {
     display: block;
 }
 
+.idcard-photo-gloss {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+/* Chip EMV Emas & Contactless NFC */
+.idcard-tech-chips {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 4px;
+}
+
 .idcard-chip-box {
     display: flex;
     align-items: center;
-    gap: 5px;
-    background: #f8fafc;
-    border: 1px solid #cbd5e1;
-    padding: 3px 8px;
-    border-radius: 6px;
+    gap: 6px;
+}
+
+.emv-chip {
+    width: 32px;
+    height: 24px;
+    background: linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #d97706 100%);
+    border-radius: 5px;
+    border: 1px solid #b45309;
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.7), 0 2px 5px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.emv-chip .chip-line.horizontal {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #92400e;
+    transform: translateY(-50%);
+}
+
+.emv-chip .chip-line.vertical {
+    position: absolute;
+    left: 45%;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background: #92400e;
+}
+
+.chip-text {
     font-size: 0.65rem;
-    font-weight: 700;
+    font-weight: 800;
     color: #64748b;
+    letter-spacing: 0.5px;
 }
 
-.idcard-chip-box i {
-    color: #d97706;
+.idcard-nfc-icon {
+    font-size: 0.95rem;
+    color: #94a3b8;
+    transform: rotate(90deg);
 }
 
-/* Kolom Kanan: Detail Biodata Siswa */
+/* Kolom Kanan: Detail Biodata */
 .idcard-right-column {
     flex: 1;
     min-width: 0;
@@ -2188,94 +2341,110 @@ body.editing-active .avatar-ring:hover::after {
 }
 
 .idcard-student-headline {
-    margin-bottom: 10px;
-    border-bottom: 1.5px dashed #e2e8f0;
-    padding-bottom: 8px;
+    margin-bottom: 12px;
+    border-bottom: 1.5px dashed #cbd5e1;
+    padding-bottom: 10px;
+}
+
+.idcard-headline-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .idcard-caption {
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.8px;
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 1px;
     color: #64748b;
-    display: block;
-    text-transform: uppercase;
+}
+
+.idcard-accreditation {
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: #10b981;
+    background: #ecfdf5;
+    padding: 2px 7px;
+    border-radius: 999px;
+    border: 1px solid #a7f3d0;
 }
 
 .idcard-fullname {
-    font-size: 1.12rem;
-    font-weight: 800;
+    font-size: 1.25rem;
+    font-weight: 900;
     color: #0f172a;
-    margin: 2px 0 0;
+    margin: 4px 0 0;
     line-height: 1.25;
+    letter-spacing: -0.3px;
 }
 
 .idcard-nis-label {
-    font-size: 0.74rem;
-    font-weight: 700;
-    color: #475569;
-    margin-top: 3px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    margin-top: 4px;
     display: block;
-}
-
-.idcard-badge[data-idcard-theme="syifa"] .idcard-nis-label {
-    color: #800020;
-}
-
-.idcard-badge[data-idcard-theme="febri"] .idcard-nis-label {
-    color: #2563eb;
+    letter-spacing: 0.5px;
 }
 
 .idcard-data-grid {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 5px;
 }
 
 .idcard-row {
     display: flex;
     align-items: baseline;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     line-height: 1.35;
 }
 
 .idcard-lbl {
-    width: 72px;
+    width: 78px;
     flex-shrink: 0;
-    font-weight: 700;
+    font-weight: 800;
     color: #64748b;
-    font-size: 0.68rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.3px;
 }
 
 .idcard-lbl::after {
     content: ":";
     float: right;
-    margin-right: 6px;
+    margin-right: 8px;
 }
 
 .idcard-val {
     flex: 1;
-    color: #1e293b;
+    color: #0f172a;
     font-weight: 600;
     word-break: break-word;
 }
 
-/* Footer Kartu (Barcode) */
+/* Footer Kartu (Barcode, QR Seal & Masa Berlaku) */
 .idcard-barcode-bar {
     background: #f8fafc;
-    border-top: 1px solid #e2e8f0;
-    padding: 10px 20px;
+    border-top: 1.5px solid #e2e8f0;
+    padding: 12px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 16px;
+    position: relative;
+    z-index: 5;
+}
+
+.idcard-barcode-area {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .idcard-barcode-lines {
     display: flex;
     align-items: center;
-    gap: 2.5px;
-    height: 22px;
+    gap: 2.2px;
+    height: 24px;
 }
 
 .idcard-barcode-lines span {
@@ -2286,44 +2455,70 @@ body.editing-active .avatar-ring:hover::after {
     border-radius: 1px;
 }
 
-.idcard-barcode-lines span:nth-child(2n) {
-    width: 3px;
-}
-.idcard-barcode-lines span:nth-child(3n) {
-    width: 1px;
-}
-.idcard-barcode-lines span:nth-child(5n) {
-    width: 4px;
-}
-
-.idcard-barcode-info {
-    text-align: right;
-    display: flex;
-    flex-direction: column;
-    font-size: 0.64rem;
-    color: #64748b;
-    font-weight: 600;
-    line-height: 1.3;
-}
+.idcard-barcode-lines span:nth-child(2n) { width: 3px; }
+.idcard-barcode-lines span:nth-child(3n) { width: 1px; }
+.idcard-barcode-lines span:nth-child(5n) { width: 4.5px; }
 
 #idcard-serial {
-    font-family: monospace;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    color: #334155;
+}
+
+.idcard-qr-seal {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    padding: 4px 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.idcard-mini-qr {
+    font-size: 1.6rem;
     color: #0f172a;
+    line-height: 1;
+}
+
+.idcard-seal-text {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    line-height: 1.25;
+}
+
+.seal-title {
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    color: #059669;
+}
+
+.seal-year {
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #475569;
 }
 
 /* Tombol Aksi di Bawah Kartu */
 .idcard-modal-actions {
-    margin-top: 18px;
+    margin-top: 20px;
     display: flex;
-    gap: 12px;
+    gap: 14px;
     width: 100%;
 }
 
 .idcard-modal-actions .btn {
     flex: 1;
     justify-content: center;
+    padding: 12px 18px;
+    font-weight: 700;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
 /* Responsif Mobile untuk Pop-Up ID Card */
@@ -2331,25 +2526,41 @@ body.editing-active .avatar-ring:hover::after {
     .idcard-modal-container {
         max-width: 100%;
     }
+    .idcard-header {
+        padding: 14px 16px;
+    }
+    .idcard-school-meta h4 {
+        font-size: 0.88rem;
+    }
+    .idcard-school-meta p {
+        font-size: 0.66rem;
+    }
     .idcard-content {
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding: 16px 14px;
-        gap: 12px;
+        padding: 18px 16px;
+        gap: 16px;
     }
     .idcard-photo-frame {
-        width: 100px;
-        height: 125px;
+        width: 110px;
+        height: 138px;
+    }
+    .idcard-tech-chips {
+        justify-content: center;
+        gap: 16px;
     }
     .idcard-fullname {
-        font-size: 1.05rem;
+        font-size: 1.15rem;
     }
     .idcard-lbl {
-        width: 65px;
+        width: 70px;
         text-align: left;
     }
     .idcard-val {
         text-align: left;
+    }
+    .idcard-barcode-bar {
+        padding: 10px 14px;
     }
 }

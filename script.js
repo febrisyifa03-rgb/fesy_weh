@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
-    const BUILD_VERSION = 'v2.1_remove_nisn';
+    const BUILD_VERSION = 'v2.2_premium_id_card';
     if (localStorage.getItem('biodata_build_version') !== BUILD_VERSION) {
         localStorage.removeItem('biodata_html_syifa');
         localStorage.removeItem('biodata_html_fesya');
@@ -586,6 +586,51 @@ document.addEventListener('DOMContentLoaded', () => {
         idCardPrintBtn.addEventListener('click', () => {
             window.print();
         });
+    }
+
+    // =========================================================================
+    // 7. INTERACTIVE 3D TILT & HOLOGRAPHIC REFLECTION FOR PREMIUM ID CARD
+    // =========================================================================
+    if (idCardBadge) {
+        const shimmer = idCardBadge.querySelector('.idcard-hologram-shimmer');
+
+        const handleTilt = (e) => {
+            const rect = idCardBadge.getBoundingClientRect();
+            const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : undefined);
+            const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : undefined);
+            if (clientX === undefined || clientY === undefined) return;
+
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const rotateX = ((centerY - y) / centerY) * 10;
+            const rotateY = ((x - centerX) / centerX) * 10;
+
+            idCardBadge.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px) scale(1.02)`;
+
+            if (shimmer) {
+                const percX = (x / rect.width) * 100;
+                const percY = (y / rect.height) * 100;
+                shimmer.style.backgroundPosition = `${percX}% ${percY}%`;
+                shimmer.style.opacity = '0.75';
+            }
+        };
+
+        const resetTilt = () => {
+            idCardBadge.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)';
+            if (shimmer) {
+                shimmer.style.opacity = '0.35';
+                shimmer.style.backgroundPosition = '50% 50%';
+            }
+        };
+
+        idCardBadge.addEventListener('mousemove', handleTilt);
+        idCardBadge.addEventListener('mouseleave', resetTilt);
+        idCardBadge.addEventListener('touchmove', handleTilt, { passive: true });
+        idCardBadge.addEventListener('touchend', resetTilt);
     }
 
     console.log(

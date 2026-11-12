@@ -527,8 +527,11 @@
                 <div class="lanyard-card-slot"></div>
             </div>
 
-            <!-- Kartu Tanda Pelajar Utama -->
+            <!-- Kartu Tanda Pelajar Utama (Premium Edition) -->
             <div class="idcard-badge" id="idcard-badge" data-idcard-theme="syifa">
+                <!-- Lapisan Hologram Berkilau Interaktif -->
+                <div class="idcard-hologram-shimmer" aria-hidden="true"></div>
+
                 <!-- Header Kartu: Logo & Sekolah -->
                 <div class="idcard-header">
                     <div class="idcard-school-brand">
@@ -540,7 +543,9 @@
                             <p>REKAYASA PERANGKAT LUNAK (XII RPL 1)</p>
                         </div>
                     </div>
-                    <span class="idcard-badge-pill">STUDENT ID</span>
+                    <div class="idcard-badge-pills">
+                        <span class="idcard-badge-pill vip-pill"><i class="fa-solid fa-award"></i> VIP PASS</span>
+                    </div>
                 </div>
 
                 <!-- Bagian Isi Kartu -->
@@ -548,16 +553,28 @@
                     <div class="idcard-left-column">
                         <div class="idcard-photo-frame">
                             <img id="idcard-photo" src="images/syifa.jpg?v=2" alt="Foto Siswa" class="idcard-photo-img">
+                            <div class="idcard-photo-gloss"></div>
                         </div>
-                        <div class="idcard-chip-box">
-                            <i class="fa-solid fa-microchip"></i>
-                            <span>SMART PASS</span>
+                        <div class="idcard-tech-chips">
+                            <div class="idcard-chip-box">
+                                <div class="emv-chip">
+                                    <span class="chip-line horizontal"></span>
+                                    <span class="chip-line vertical"></span>
+                                </div>
+                                <span class="chip-text">SMART ID</span>
+                            </div>
+                            <div class="idcard-nfc-icon" title="Contactless Active">
+                                <i class="fa-solid fa-wifi"></i>
+                            </div>
                         </div>
                     </div>
 
                     <div class="idcard-right-column">
                         <div class="idcard-student-headline">
-                            <span class="idcard-caption">KARTU TANDA SISWA</span>
+                            <div class="idcard-headline-top">
+                                <span class="idcard-caption">KARTU TANDA SISWA RESMI</span>
+                                <span class="idcard-accreditation">AKREDITASI A</span>
+                            </div>
                             <h3 id="idcard-name" class="idcard-fullname">Syifa Anggita Ramadani</h3>
                             <span id="idcard-nis" class="idcard-nis-label">SISWA KELAS XII RPL 1</span>
                         </div>
@@ -587,14 +604,23 @@
                     </div>
                 </div>
 
-                <!-- Bagian Bawah Kartu: Barcode & Validitas -->
+                <!-- Bagian Bawah Kartu: Barcode, QR Code & Cap Keaslian -->
                 <div class="idcard-barcode-bar">
-                    <div class="idcard-barcode-lines">
-                        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-                    </div>
-                    <div class="idcard-barcode-info">
+                    <div class="idcard-barcode-area">
+                        <div class="idcard-barcode-lines">
+                            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                        </div>
                         <span id="idcard-serial">ID: SMKN1BYS-2024-SYIFA-001</span>
-                        <span>BERLAKU: 2024 - 2027</span>
+                    </div>
+
+                    <div class="idcard-qr-seal">
+                        <div class="idcard-mini-qr">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </div>
+                        <div class="idcard-seal-text">
+                            <span class="seal-title">OFFICIAL PASS</span>
+                            <span class="seal-year">2024 - 2027</span>
+                        </div>
                     </div>
                 </div>
             </div>
