@@ -190,6 +190,240 @@ body {
     right: 5%;
 }
 
+/* --- Animated Floating Background Elements (Pita, Love, Coklat & Planet, Roket, Bintang) --- */
+.floating-bg-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.floating-set {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+}
+
+/* Switcher: tampilkan elemen sesuai profil aktif */
+html[data-active-profile="syifa"] .floating-set-syifa {
+    display: block;
+    opacity: 1;
+}
+html[data-active-profile="syifa"] .floating-set-febri {
+    display: none;
+    opacity: 0;
+}
+
+html[data-active-profile="fesya"] .floating-set-syifa {
+    display: none;
+    opacity: 0;
+}
+html[data-active-profile="fesya"] .floating-set-febri {
+    display: block;
+    opacity: 1;
+}
+
+.float-item {
+    position: absolute;
+    display: inline-block;
+    user-select: none;
+    line-height: 1;
+    will-change: transform;
+}
+
+/* Filter Glow & Drop Shadow */
+.floating-set-syifa .float-item {
+    filter: drop-shadow(0 6px 14px rgba(128, 0, 32, 0.22));
+}
+
+.floating-set-febri .float-item {
+    filter: drop-shadow(0 6px 16px rgba(100, 149, 237, 0.35));
+}
+
+/* Animasi Gerakan Floating */
+@keyframes floatSwayA {
+    0% {
+        transform: translateY(0px) translateX(0px) rotate(0deg);
+    }
+    33% {
+        transform: translateY(-28px) translateX(12px) rotate(8deg);
+    }
+    66% {
+        transform: translateY(-46px) translateX(-10px) rotate(-6deg);
+    }
+    100% {
+        transform: translateY(0px) translateX(0px) rotate(0deg);
+    }
+}
+
+@keyframes floatSwayB {
+    0% {
+        transform: translateY(0px) translateX(0px) rotate(0deg) scale(1);
+    }
+    50% {
+        transform: translateY(32px) translateX(-16px) rotate(-10deg) scale(1.08);
+    }
+    100% {
+        transform: translateY(0px) translateX(0px) rotate(0deg) scale(1);
+    }
+}
+
+@keyframes floatRocketMove {
+    0% {
+        transform: translateY(0px) translateX(0px) rotate(-35deg) scale(1);
+    }
+    50% {
+        transform: translateY(-40px) translateX(24px) rotate(-28deg) scale(1.1);
+    }
+    100% {
+        transform: translateY(0px) translateX(0px) rotate(-35deg) scale(1);
+    }
+}
+
+@keyframes floatPlanetTwinkle {
+    0% {
+        transform: translateY(0px) rotate(0deg) scale(1);
+    }
+    50% {
+        transform: translateY(-22px) rotate(18deg) scale(1.12);
+    }
+    100% {
+        transform: translateY(0px) rotate(0deg) scale(1);
+    }
+}
+
+/* Posisi dan Durasi 16 Elemen Melayang */
+.float-item.item-1 {
+    top: 7%;
+    left: 4%;
+    font-size: 2.3rem;
+    animation: floatSwayA 9s ease-in-out infinite;
+}
+.float-item.item-2 {
+    top: 14%;
+    right: 5%;
+    font-size: 2.2rem;
+    animation: floatSwayB 11s ease-in-out infinite -2s;
+}
+.float-item.item-3 {
+    top: 28%;
+    left: 5%;
+    font-size: 2rem;
+    animation: floatSwayA 13s ease-in-out infinite -4s;
+}
+.float-item.item-4 {
+    top: 36%;
+    right: 6%;
+    font-size: 2.4rem;
+    animation: floatSwayB 10s ease-in-out infinite -1s;
+}
+.float-item.item-5 {
+    top: 52%;
+    left: 3%;
+    font-size: 2.1rem;
+    animation: floatSwayA 12s ease-in-out infinite -5s;
+}
+.float-item.item-6 {
+    top: 62%;
+    right: 4%;
+    font-size: 1.9rem;
+    animation: floatPlanetTwinkle 8s ease-in-out infinite -3s;
+}
+.float-item.item-7 {
+    top: 76%;
+    left: 4%;
+    font-size: 2.5rem;
+    animation: floatSwayB 14s ease-in-out infinite -6s;
+}
+.float-item.item-8 {
+    top: 86%;
+    right: 5%;
+    font-size: 2.2rem;
+    animation: floatSwayA 11s ease-in-out infinite -2s;
+}
+.float-item.item-9 {
+    top: 18%;
+    left: 17%;
+    font-size: 1.6rem;
+    animation: floatRocketMove 10s ease-in-out infinite -4s;
+    opacity: 0.65;
+}
+.float-item.item-10 {
+    top: 22%;
+    right: 18%;
+    font-size: 1.8rem;
+    animation: floatSwayA 11s ease-in-out infinite -3s;
+    opacity: 0.7;
+}
+.float-item.item-11 {
+    top: 48%;
+    left: 14%;
+    font-size: 1.7rem;
+    animation: floatSwayB 12s ease-in-out infinite -7s;
+    opacity: 0.6;
+}
+.float-item.item-12 {
+    top: 52%;
+    right: 15%;
+    font-size: 1.8rem;
+    animation: floatPlanetTwinkle 9s ease-in-out infinite -2s;
+    opacity: 0.65;
+}
+.float-item.item-13 {
+    top: 72%;
+    left: 15%;
+    font-size: 1.8rem;
+    animation: floatSwayA 10s ease-in-out infinite -5s;
+    opacity: 0.65;
+}
+.float-item.item-14 {
+    top: 78%;
+    right: 16%;
+    font-size: 2rem;
+    animation: floatRocketMove 11s ease-in-out infinite -1s;
+    opacity: 0.7;
+}
+.float-item.item-15 {
+    top: 92%;
+    left: 32%;
+    font-size: 1.7rem;
+    animation: floatSwayB 12s ease-in-out infinite -4s;
+    opacity: 0.55;
+}
+.float-item.item-16 {
+    top: 6%;
+    right: 30%;
+    font-size: 1.8rem;
+    animation: floatPlanetTwinkle 9s ease-in-out infinite -6s;
+    opacity: 0.65;
+}
+
+/* Responsif Mobile untuk Elemen Background */
+@media (max-width: 768px) {
+    .float-item.item-1 { font-size: 1.6rem; left: 2%; top: 6%; }
+    .float-item.item-2 { font-size: 1.6rem; right: 2%; top: 12%; }
+    .float-item.item-3 { font-size: 1.5rem; left: 2%; top: 28%; }
+    .float-item.item-4 { font-size: 1.6rem; right: 2%; top: 38%; }
+    .float-item.item-5 { font-size: 1.5rem; left: 1%; top: 52%; }
+    .float-item.item-6 { font-size: 1.4rem; right: 2%; top: 64%; }
+    .float-item.item-7 { font-size: 1.7rem; left: 2%; top: 76%; }
+    .float-item.item-8 { font-size: 1.6rem; right: 2%; top: 88%; }
+    .float-item.item-9,
+    .float-item.item-11,
+    .float-item.item-13,
+    .float-item.item-15 {
+        display: none !important;
+    }
+}
+
 /* --- Container & Layout --- */
 .container {
     width: 100%;
@@ -1716,6 +1950,7 @@ body.editing-active .avatar-ring:hover::after {
     }
 
     .blob-bg,
+    .floating-bg-container,
     .header,
     .nav-actions,
     .hero-actions,
