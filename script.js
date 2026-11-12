@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
-    const BUILD_VERSION = 'v1.5_love_emoji';
+    const BUILD_VERSION = 'v1.6_tab_love_only';
     if (localStorage.getItem('biodata_build_version') !== BUILD_VERSION) {
         localStorage.removeItem('biodata_html_syifa');
         localStorage.removeItem('biodata_html_fesya');
