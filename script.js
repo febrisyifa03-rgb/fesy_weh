@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
-    const BUILD_VERSION = 'v2.6_real_songs_audio';
+    const BUILD_VERSION = 'v2.7_favorites_section';
     if (localStorage.getItem('biodata_build_version') !== BUILD_VERSION) {
         localStorage.removeItem('biodata_html_syifa');
         localStorage.removeItem('biodata_html_fesya');
@@ -264,6 +264,11 @@ document.addEventListener('DOMContentLoaded', () => {
         '.track-genre-pill',
         '.now-playing-title',
         '.now-playing-artist',
+        '.fav-card-title',
+        '.fav-card-desc',
+        '.fav-item-name',
+        '.fav-item-sub',
+        '.fav-card-badge',
         '.contact-handle',
         '.subsection-title',
         '.section-title',

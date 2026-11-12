@@ -11,7 +11,7 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- CSS Utama -->
-    <link rel="stylesheet" href="style.css?v=3.3">
+    <link rel="stylesheet" href="style.css?v=3.4">
 </head>
 <body>
     <!-- Background Floating Blobs -->
@@ -89,7 +89,7 @@
                 <a href="#personal-info" class="nav-link"><i class="fa-solid fa-address-card"></i> Biodata</a>
                 <a href="#education" class="nav-link"><i class="fa-solid fa-graduation-cap"></i> Pendidikan</a>
                 <a href="#experience" class="nav-link"><i class="fa-solid fa-briefcase"></i> Pengalaman</a>
-                <a href="#music" class="nav-link"><i class="fa-solid fa-music"></i> Musik</a>
+                <a href="#favorites" class="nav-link"><i class="fa-solid fa-heart"></i> Favorit</a>
                 <a href="#contact" class="nav-link"><i class="fa-brands fa-instagram"></i> Media Sosial</a>
             </nav>
 
@@ -334,12 +334,113 @@
                 </div>
             </section>
 
-            <!-- Section Musik Favorit Syifa -->
-            <section id="music" class="section">
+            <!-- Section Apa yang Saya Suka (Favorit & Preferensi) Syifa -->
+            <section id="favorites" class="section">
                 <div class="container">
                     <div class="section-header">
-                        <h2 class="section-title">Musik Favorit 🎧</h2>
-                        <p class="section-subtitle">Lagu favorit pilihan Syifa yang siap didengar dan diputar langsung</p>
+                        <h2 class="section-title">Hal yang Saya Suka ✨</h2>
+                        <p class="section-subtitle">Koleksi favorit Syifa mulai dari makanan, minuman, warna kesukaan, hingga lagu yang bisa diputar langsung</p>
+                    </div>
+
+                    <div class="favorites-grid">
+                        <!-- Makanan Favorit -->
+                        <div class="fav-card">
+                            <span class="fav-card-badge"><i class="fa-solid fa-utensils"></i> Kuliner</span>
+                            <span class="fav-card-icon">🍜</span>
+                            <h3 class="fav-card-title">Makanan Favorit</h3>
+                            <p class="fav-card-desc">Camilan dan hidangan lezat kesukaan Syifa:</p>
+                            <div class="fav-item-list">
+                                <div class="fav-item-row">
+                                    <span class="fav-item-bullet">🥟</span>
+                                    <div class="fav-item-text">
+                                        <strong class="fav-item-name">Dimsum Ayam & Seblak</strong>
+                                        <span class="fav-item-sub">Gurih, kenyal, dan pedas manis nagih</span>
+                                    </div>
+                                </div>
+                                <div class="fav-item-row">
+                                    <span class="fav-item-bullet">🍫</span>
+                                    <div class="fav-item-text">
+                                        <strong class="fav-item-name">Coklat Manis & Kentang Goreng</strong>
+                                        <span class="fav-item-sub">Teman setia pas nugas atau nonton film</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Minuman Favorit -->
+                        <div class="fav-card">
+                            <span class="fav-card-badge"><i class="fa-solid fa-glass-water"></i> Segar</span>
+                            <span class="fav-card-icon">🧋</span>
+                            <h3 class="fav-card-title">Minuman Favorit</h3>
+                            <p class="fav-card-desc">Pelepas dahaga yang selalu bikin ceria:</p>
+                            <div class="fav-item-list">
+                                <div class="fav-item-row">
+                                    <span class="fav-item-bullet">🍵</span>
+                                    <div class="fav-item-text">
+                                        <strong class="fav-item-name">Matcha Latte & Boba Milk Tea</strong>
+                                        <span class="fav-item-sub">Rasa creamy manis yang menenangkan</span>
+                                    </div>
+                                </div>
+                                <div class="fav-item-row">
+                                    <span class="fav-item-bullet">🍓</span>
+                                    <div class="fav-item-text">
+                                        <strong class="fav-item-name">Strawberry Smoothies & Es Teh</strong>
+                                        <span class="fav-item-sub">Segar dingin paling nikmat pas siang</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Warna Favorit -->
+                        <div class="fav-card">
+                            <span class="fav-card-badge"><i class="fa-solid fa-palette"></i> Estetika</span>
+                            <span class="fav-card-icon">🎨</span>
+                            <h3 class="fav-card-title">Warna Favorit</h3>
+                            <p class="fav-card-desc">Kombinasi warna elegan & manis kesukaan:</p>
+                            <div class="fav-color-swatches">
+                                <div class="fav-color-pill">
+                                    <span class="color-dot" style="background: #800020; box-shadow: 0 0 8px rgba(128,0,32,0.6);"></span>
+                                    <span class="fav-item-name">Maroon</span>
+                                </div>
+                                <div class="fav-color-pill">
+                                    <span class="color-dot" style="background: #c59b27; box-shadow: 0 0 8px rgba(197,155,39,0.6);"></span>
+                                    <span class="fav-item-name">Rose Gold</span>
+                                </div>
+                                <div class="fav-color-pill">
+                                    <span class="color-dot" style="background: #f472b6; box-shadow: 0 0 8px rgba(244,114,182,0.6);"></span>
+                                    <span class="fav-item-name">Soft Pink</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hal Favorit Lainnya -->
+                        <div class="fav-card">
+                            <span class="fav-card-badge"><i class="fa-solid fa-sparkles"></i> Hobi</span>
+                            <span class="fav-card-icon">💖</span>
+                            <h3 class="fav-card-title">Hal & Hiburan Favorit</h3>
+                            <p class="fav-card-desc">Aktivitas yang paling membahagiakan:</p>
+                            <div class="fav-item-list">
+                                <div class="fav-item-row">
+                                    <span class="fav-item-bullet">🎬</span>
+                                    <div class="fav-item-text">
+                                        <strong class="fav-item-name">Nonton Film Romance & Drakor</strong>
+                                        <span class="fav-item-sub">Suka cerita romantis yang menghangatkan hati</span>
+                                    </div>
+                                </div>
+                                <div class="fav-item-row">
+                                    <span class="fav-item-bullet">🎧</span>
+                                    <div class="fav-item-text">
+                                        <strong class="fav-item-name">Dengerin Musik Sambil Healing</strong>
+                                        <span class="fav-item-sub">Menenangkan pikiran seusai jam belajar</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subheader Musik Favorit -->
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <span class="badge-pill"><i class="fa-solid fa-music"></i> Lagu Favorit Syifa (Bisa Didengar Langsung)</span>
                     </div>
 
                     <div class="music-card-player" data-player-for="syifa">
@@ -665,12 +766,113 @@
                 </div>
             </section>
 
-            <!-- Section Musik Favorit Febri -->
-            <section class="section">
+            <!-- Section Apa yang Saya Suka (Favorit & Preferensi) Febri -->
+            <section id="favorites-febri" class="section">
                 <div class="container">
                     <div class="section-header">
-                        <h2 class="section-title">Musik Favorit 🎧</h2>
-                        <p class="section-subtitle">Lagu favorit pilihan Febri yang siap didengar dan diputar langsung</p>
+                        <h2 class="section-title">Hal yang Saya Suka ⭐</h2>
+                        <p class="section-subtitle">Koleksi favorit Febri mulai dari makanan, minuman, warna kesukaan, hingga lagu yang bisa diputar langsung</p>
+                    </div>
+
+                    <div class="favorites-grid">
+                        <!-- Makanan Favorit -->
+                        <div class="fav-card">
+                            <span class="fav-card-badge"><i class="fa-solid fa-utensils"></i> Kuliner</span>
+                            <span class="fav-card-icon">🍗</span>
+                            <h3 class="fav-card-title">Makanan Favorit</h3>
+                            <p class="fav-card-desc">Menu pedas & gurih favorit Febri:</p>
+                            <div class="fav-item-list">
+                                <div class="fav-item-row">
+                                    <span class="fav-item-bullet">🌶️</span>
+                                    <div class="fav-item-text">
+                                        <strong class="fav-item-name">Ayam Geprek Sambal Matah</strong>
+                                        <span class="fav-item-sub">Pedas nampol bikin semangat ngoding</span>
+                                    </div>
+                                </div>
+                                <div class="fav-item-row">
+                                    <span class="fav-item-bullet">🍲</span>
+                                    <div class="fav-item-text">
+                                        <strong class="fav-item-name">Bakso Urat & Nasi Goreng Spesial</strong>
+                                        <span class="fav-item-sub">Kenyang dan nikmat disantap kapan saja</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Minuman Favorit -->
+                        <div class="fav-card">
+                            <span class="fav-card-badge"><i class="fa-solid fa-glass-water"></i> Segar</span>
+                            <span class="fav-card-icon">☕</span>
+                            <h3 class="fav-card-title">Minuman Favorit</h3>
+                            <p class="fav-card-desc">Minuman energi & penyegar dahaga:</p>
+                            <div class="fav-item-list">
+                                <div class="fav-item-row">
+                                    <span class="fav-item-bullet">🧋</span>
+                                    <div class="fav-item-text">
+                                        <strong class="fav-item-name">Es Kopi Susu Gula Aren</strong>
+                                        <span class="fav-item-sub">Booster fokus pas eksplorasi kode malam</span>
+                                    </div>
+                                </div>
+                                <div class="fav-item-row">
+                                    <span class="fav-item-bullet">🍋</span>
+                                    <div class="fav-item-text">
+                                        <strong class="fav-item-name">Ice Lemon Tea & Susu Coklat</strong>
+                                        <span class="fav-item-sub">Segar dingin sehabis tanding badminton</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Warna Favorit -->
+                        <div class="fav-card">
+                            <span class="fav-card-badge"><i class="fa-solid fa-palette"></i> Estetika</span>
+                            <span class="fav-card-icon">🎨</span>
+                            <h3 class="fav-card-title">Warna Favorit</h3>
+                            <p class="fav-card-desc">Nuansa kosmik berkarakter kesukaan:</p>
+                            <div class="fav-color-swatches">
+                                <div class="fav-color-pill">
+                                    <span class="color-dot" style="background: #2563eb; box-shadow: 0 0 8px rgba(37,99,235,0.6);"></span>
+                                    <span class="fav-item-name">Sapphire Blue</span>
+                                </div>
+                                <div class="fav-color-pill">
+                                    <span class="color-dot" style="background: #06b6d4; box-shadow: 0 0 8px rgba(6,182,212,0.6);"></span>
+                                    <span class="fav-item-name">Cyber Cyan</span>
+                                </div>
+                                <div class="fav-color-pill">
+                                    <span class="color-dot" style="background: #0f172a; box-shadow: 0 0 8px rgba(15,23,42,0.6);"></span>
+                                    <span class="fav-item-name">Midnight Dark</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hal Favorit Lainnya -->
+                        <div class="fav-card">
+                            <span class="fav-card-badge"><i class="fa-solid fa-sparkles"></i> Hobi</span>
+                            <span class="fav-card-icon">🏸</span>
+                            <h3 class="fav-card-title">Hal & Hiburan Favorit</h3>
+                            <p class="fav-card-desc">Aktivitas seru yang paling Febri sukai:</p>
+                            <div class="fav-item-list">
+                                <div class="fav-item-row">
+                                    <span class="fav-item-bullet">🏸</span>
+                                    <div class="fav-item-text">
+                                        <strong class="fav-item-name">Main Badminton Sore Hari</strong>
+                                        <span class="fav-item-sub">Olahraga seru bareng teman melatih fisik</span>
+                                    </div>
+                                </div>
+                                <div class="fav-item-row">
+                                    <span class="fav-item-bullet">🎮</span>
+                                    <div class="fav-item-text">
+                                        <strong class="fav-item-name">Mabar Game & Denger Lagu Jawa</strong>
+                                        <span class="fav-item-sub">Santai sambil dengerin alunan musik asik</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subheader Musik Favorit -->
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <span class="badge-pill"><i class="fa-solid fa-music"></i> Lagu Favorit Febri (Bisa Didengar Langsung)</span>
                     </div>
 
                     <div class="music-card-player" data-player-for="fesya">
@@ -840,9 +1042,9 @@
             <i class="fa-solid fa-briefcase"></i>
             <span>Karya</span>
         </a>
-        <a href="#music" class="mobile-nav-item">
-            <i class="fa-solid fa-music"></i>
-            <span>Musik</span>
+        <a href="#favorites" class="mobile-nav-item">
+            <i class="fa-solid fa-heart"></i>
+            <span>Favorit</span>
         </a>
         <a href="#contact" class="mobile-nav-item">
             <i class="fa-brands fa-instagram"></i>
@@ -1015,6 +1217,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
     <!-- JavaScript Utama -->
-    <script src="script.js?v=3.3"></script>
+    <script src="script.js?v=3.4"></script>
 </body>
 </html>
