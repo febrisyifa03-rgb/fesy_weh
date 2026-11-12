@@ -43,12 +43,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
-    const BUILD_VERSION = 'v2.7_favorites_section';
+    const BUILD_VERSION = 'v4.0_favorites_and_music';
     if (localStorage.getItem('biodata_build_version') !== BUILD_VERSION) {
         localStorage.removeItem('biodata_html_syifa');
         localStorage.removeItem('biodata_html_fesya');
         localStorage.setItem('biodata_build_version', BUILD_VERSION);
     }
+
+    try {
+        const testSyifa = localStorage.getItem('biodata_html_syifa');
+        if (testSyifa && !testSyifa.includes('favorites')) {
+            localStorage.removeItem('biodata_html_syifa');
+            localStorage.removeItem('biodata_html_fesya');
+        }
+    } catch(e) {}
 
     const profileViews = {
         syifa: document.getElementById('view-syifa'),
@@ -94,7 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Jangan timpa saat pengguna sedang aktif mengetik di mode edit
                     if (isEditMode) return;
 
-                    if (data && data.syifa && data.syifa.trim().length > 200 && profileViews.syifa) {
+                    // Pastikan data Firestore memiliki seksi favorites sebelum menimpa tampilan
+                    if (data && data.syifa && data.syifa.includes('favorites') && profileViews.syifa) {
                         profileViews.syifa.innerHTML = data.syifa;
                         const imgSyifa = profileViews.syifa.querySelector('.avatar-img');
                         if (imgSyifa && !imgSyifa.src.startsWith('data:')) {
@@ -103,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         try { localStorage.setItem('biodata_html_syifa', data.syifa); } catch(e){}
                     }
 
-                    if (data && data.fesya && data.fesya.trim().length > 200 && profileViews.fesya) {
+                    if (data && data.fesya && data.fesya.includes('favorites') && profileViews.fesya) {
                         profileViews.fesya.innerHTML = data.fesya;
                         const imgFebri = profileViews.fesya.querySelector('.avatar-img');
                         if (imgFebri && !imgFebri.src.startsWith('data:')) {
