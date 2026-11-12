@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
-    const BUILD_VERSION = 'v2.2_premium_id_card';
+    const BUILD_VERSION = 'v2.3_ultra_premium_ui';
     if (localStorage.getItem('biodata_build_version') !== BUILD_VERSION) {
         localStorage.removeItem('biodata_html_syifa');
         localStorage.removeItem('biodata_html_fesya');
