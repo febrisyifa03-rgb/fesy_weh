@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
-    const BUILD_VERSION = 'v2.0_student_id_card';
+    const BUILD_VERSION = 'v2.1_remove_nisn';
     if (localStorage.getItem('biodata_build_version') !== BUILD_VERSION) {
         localStorage.removeItem('biodata_html_syifa');
         localStorage.removeItem('biodata_html_fesya');
@@ -535,7 +535,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (idCardBadge) idCardBadge.setAttribute('data-idcard-theme', 'febri');
             if (idCardPhoto) idCardPhoto.src = 'images/febri.jpg?v=2';
             if (idCardName) idCardName.textContent = getFieldValueFromView(activeView, 'Nama Lengkap', 'Febriani Isnaini Murath');
-            if (idCardNis) idCardNis.textContent = 'NIS: 2427.12.002 • XII RPL 1';
+            if (idCardNis) idCardNis.textContent = 'SISWA KELAS XII RPL 1';
             if (idCardTtl) idCardTtl.textContent = getFieldValueFromView(activeView, 'Tempat, Tanggal Lahir', 'Karawang, 05 Februari 2009');
             if (idCardAgama) idCardAgama.textContent = getFieldValueFromView(activeView, 'Agama', 'Islam') + ' / ' + getFieldValueFromView(activeView, 'Jenis Kelamin', 'Perempuan');
             if (idCardHobi) idCardHobi.textContent = getFieldValueFromView(activeView, 'Hobi', 'Main Badmintoon, Mendengarkan Musik Dan Main Game');
@@ -546,7 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (idCardBadge) idCardBadge.setAttribute('data-idcard-theme', 'syifa');
             if (idCardPhoto) idCardPhoto.src = 'images/syifa.jpg?v=2';
             if (idCardName) idCardName.textContent = getFieldValueFromView(activeView, 'Nama Lengkap', 'Syifa Anggita Ramadani');
-            if (idCardNis) idCardNis.textContent = 'NIS: 2427.12.001 • XII RPL 1';
+            if (idCardNis) idCardNis.textContent = 'SISWA KELAS XII RPL 1';
             if (idCardTtl) idCardTtl.textContent = getFieldValueFromView(activeView, 'Tempat, Tanggal Lahir', 'Sumedang, 06 September 2008');
             if (idCardAgama) idCardAgama.textContent = getFieldValueFromView(activeView, 'Agama', 'Islam') + ' / ' + getFieldValueFromView(activeView, 'Jenis Kelamin', 'Perempuan');
             if (idCardHobi) idCardHobi.textContent = getFieldValueFromView(activeView, 'Hobi', 'Menonton Dan Mendengarkan musik');
