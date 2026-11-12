@@ -139,9 +139,9 @@
                                 <a href="#contact" class="btn btn-primary">
                                     <i class="fa-brands fa-instagram"></i> Media Sosial
                                 </a>
-                                <a href="#personal-info" class="btn btn-outline">
+                                <button type="button" class="btn btn-outline open-idcard-trigger" title="Buka Kartu Tanda Pelajar (ID Card)">
                                     <i class="fa-solid fa-id-card"></i> Lihat Biodata
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -149,7 +149,7 @@
             </section>
 
             <!-- Section Data Pribadi Lengkap Syifa -->
-            <section id="personal-info" class="section section-personal-info">
+            <section id="personal-info" class="section">
                 <div class="container">
                     <div class="section-header">
                         <h2 class="section-title">Data Diri Lengkap</h2>
@@ -215,7 +215,7 @@
             </section>
 
             <!-- Section Riwayat Pendidikan Syifa -->
-            <section id="education" class="section section-education">
+            <section id="education" class="section">
                 <div class="container">
                     <div class="section-header">
                         <h2 class="section-title">Riwayat Pendidikan</h2>
@@ -254,7 +254,7 @@
             </section>
 
             <!-- Section Media Sosial Syifa (Hanya Instagram) -->
-            <section id="contact" class="section section-contact">
+            <section id="contact" class="section">
                 <div class="container">
                     <div class="section-header">
                         <h2 class="section-title">Media Sosial</h2>
@@ -308,9 +308,9 @@
                                 <a href="#contact" class="btn btn-primary">
                                     <i class="fa-brands fa-instagram"></i> Media Sosial
                                 </a>
-                                <a href="#personal-info" class="btn btn-outline">
+                                <button type="button" class="btn btn-outline open-idcard-trigger" title="Buka Kartu Tanda Pelajar (ID Card)">
                                     <i class="fa-solid fa-id-card"></i> Lihat Biodata
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -318,7 +318,7 @@
             </section>
 
             <!-- Section Data Pribadi Lengkap Febri -->
-            <section id="personal-info-febri" class="section section-personal-info">
+            <section class="section">
                 <div class="container">
                     <div class="section-header">
                         <h2 class="section-title">Data Diri Lengkap</h2>
@@ -384,7 +384,7 @@
             </section>
 
             <!-- Section Riwayat Pendidikan Febri -->
-            <section id="education-febri" class="section section-education">
+            <section class="section">
                 <div class="container">
                     <div class="section-header">
                         <h2 class="section-title">Riwayat Pendidikan</h2>
@@ -423,7 +423,7 @@
             </section>
 
             <!-- Section Media Sosial Febri (Hanya Instagram) -->
-            <section id="contact-febri" class="section section-contact">
+            <section class="section">
                 <div class="container">
                     <div class="section-header">
                         <h2 class="section-title">Media Sosial</h2>
@@ -505,6 +505,107 @@
                 </button>
                 <button id="exit-edit-btn" class="btn btn-secondary btn-sm" title="Tutup mode edit">
                     <i class="fa-solid fa-check"></i> <span>Selesai</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====================================================================
+         POP-UP MODAL: KARTU TANDA PELAJAR (STUDENT ID CARD)
+         ==================================================================== -->
+    <div id="id-card-modal" class="idcard-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="idcard-name">
+        <div class="idcard-modal-container">
+            <!-- Tombol Tutup X Melayang -->
+            <button type="button" class="idcard-close-btn" id="idcard-close-btn" aria-label="Tutup ID Card" title="Tutup ID Card">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Tali Gantungan ID Card (Lanyard Visual) -->
+            <div class="idcard-lanyard-hanger">
+                <div class="lanyard-ribbon"></div>
+                <div class="lanyard-metal-clip"></div>
+                <div class="lanyard-card-slot"></div>
+            </div>
+
+            <!-- Kartu Tanda Pelajar Utama -->
+            <div class="idcard-badge" id="idcard-badge" data-idcard-theme="syifa">
+                <!-- Header Kartu: Logo & Sekolah -->
+                <div class="idcard-header">
+                    <div class="idcard-school-brand">
+                        <div class="idcard-school-icon">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <div class="idcard-school-meta">
+                            <h4>SMK NEGERI 1 BANYUSARI</h4>
+                            <p>REKAYASA PERANGKAT LUNAK (XII RPL 1)</p>
+                        </div>
+                    </div>
+                    <span class="idcard-badge-pill">STUDENT ID</span>
+                </div>
+
+                <!-- Bagian Isi Kartu -->
+                <div class="idcard-content">
+                    <div class="idcard-left-column">
+                        <div class="idcard-photo-frame">
+                            <img id="idcard-photo" src="images/syifa.jpg?v=2" alt="Foto Siswa" class="idcard-photo-img">
+                        </div>
+                        <div class="idcard-chip-box">
+                            <i class="fa-solid fa-microchip"></i>
+                            <span>SMART PASS</span>
+                        </div>
+                    </div>
+
+                    <div class="idcard-right-column">
+                        <div class="idcard-student-headline">
+                            <span class="idcard-caption">KARTU TANDA SISWA</span>
+                            <h3 id="idcard-name" class="idcard-fullname">Syifa Anggita Ramadani</h3>
+                            <span id="idcard-nis" class="idcard-nis-label">NIS: 2427.12.001 • XII RPL 1</span>
+                        </div>
+
+                        <div class="idcard-data-grid">
+                            <div class="idcard-row">
+                                <span class="idcard-lbl">TTL</span>
+                                <span class="idcard-val" id="idcard-ttl">Sumedang, 06 September 2008</span>
+                            </div>
+                            <div class="idcard-row">
+                                <span class="idcard-lbl">AGAMA</span>
+                                <span class="idcard-val" id="idcard-agama">Islam</span>
+                            </div>
+                            <div class="idcard-row">
+                                <span class="idcard-lbl">HOBI</span>
+                                <span class="idcard-val" id="idcard-hobi">Menonton Dan Mendengarkan musik</span>
+                            </div>
+                            <div class="idcard-row">
+                                <span class="idcard-lbl">CITA-CITA</span>
+                                <span class="idcard-val" id="idcard-cita">Ceo</span>
+                            </div>
+                            <div class="idcard-row">
+                                <span class="idcard-lbl">MEDSOS</span>
+                                <span class="idcard-val" id="idcard-ig">@sfagta_</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bagian Bawah Kartu: Barcode & Validitas -->
+                <div class="idcard-barcode-bar">
+                    <div class="idcard-barcode-lines">
+                        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                    <div class="idcard-barcode-info">
+                        <span id="idcard-serial">ID: SMKN1BYS-2024-SYIFA-001</span>
+                        <span>BERLAKU: 2024 - 2027</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tombol Aksi di Bawah Kartu -->
+            <div class="idcard-modal-actions">
+                <button type="button" class="btn btn-primary btn-sm" id="idcard-print-btn">
+                    <i class="fa-solid fa-print"></i> Cetak ID Card
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" id="idcard-close-btn-bottom">
+                    <i class="fa-solid fa-xmark"></i> Tutup
                 </button>
             </div>
         </div>

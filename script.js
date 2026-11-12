@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
-    const BUILD_VERSION = 'v2.0_navigation_fixed';
+    const BUILD_VERSION = 'v2.0_student_id_card';
     if (localStorage.getItem('biodata_build_version') !== BUILD_VERSION) {
         localStorage.removeItem('biodata_html_syifa');
         localStorage.removeItem('biodata_html_fesya');
@@ -409,47 +409,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =========================================================================
-    // 6. NAVIGASI HALUS UNTUK SEMUA LINK & TOMBOL (#personal-info, #contact, dll.)
+    // 6. NAVIGASI HALUS ANTARA DESKTOP & MOBILE BOTTOM BAR
     // =========================================================================
     const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-item');
 
-    document.addEventListener('click', (e) => {
-        const link = e.target.closest('a[href^="#"]');
-        if (!link) return;
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const targetHref = link.getAttribute('href');
+            if (!targetHref || !targetHref.startsWith('#')) return;
 
-        const targetHref = link.getAttribute('href');
-        if (!targetHref || targetHref === '#' || targetHref === '#about-top') return;
-
-        const sectionTarget = targetHref.replace('#', '').replace('-syifa', '').replace('-febri', '');
-        const activeProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
-        const activeView = profileViews[activeProfile];
-        if (!activeView) return;
-
-        const targetSection = activeView.querySelector(`#${sectionTarget}-${activeProfile}`) ||
-                              activeView.querySelector(`#${sectionTarget}`) ||
-                              activeView.querySelector(`section.section-${sectionTarget}`) ||
-                              findSectionByTopic(activeView, sectionTarget);
-
-        if (targetSection) {
             e.preventDefault();
-            const headerOffset = 85;
-            const elementPosition = targetSection.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            const sectionTarget = targetHref.replace('#', '');
 
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
+            const activeProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
+            const activeView = profileViews[activeProfile];
+            if (!activeView) return;
 
-            // Efek visual lembut sorotan saat tiba di kartu data diri
-            const card = targetSection.querySelector('.info-card, .timeline, .contact-card-grid');
-            if (card) {
-                card.classList.add('section-highlight');
-                setTimeout(() => {
-                    card.classList.remove('section-highlight');
-                }, 1000);
+            const targetSection = activeView.querySelector(`#${sectionTarget}`) || 
+                                  activeView.querySelector(`section.${sectionTarget}-section`) ||
+                                  findSectionByTopic(activeView, sectionTarget);
+
+            if (targetSection) {
+                const headerOffset = 80;
+                const elementPosition = targetSection.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
             }
-        }
+        });
     });
 
     function findSectionByTopic(container, topic) {
@@ -494,6 +484,109 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // =========================================================================
+    // 7. POP-UP MODAL KARTU TANDA PELAJAR (STUDENT ID CARD)
+    // =========================================================================
+    const idCardModal = document.getElementById('id-card-modal');
+    const idCardBadge = document.getElementById('idcard-badge');
+    const idCardPhoto = document.getElementById('idcard-photo');
+    const idCardName = document.getElementById('idcard-name');
+    const idCardNis = document.getElementById('idcard-nis');
+    const idCardTtl = document.getElementById('idcard-ttl');
+    const idCardAgama = document.getElementById('idcard-agama');
+    const idCardHobi = document.getElementById('idcard-hobi');
+    const idCardCita = document.getElementById('idcard-cita');
+    const idCardIg = document.getElementById('idcard-ig');
+    const idCardSerial = document.getElementById('idcard-serial');
+    const idCardCloseBtn = document.getElementById('idcard-close-btn');
+    const idCardCloseBtnBottom = document.getElementById('idcard-close-btn-bottom');
+    const idCardPrintBtn = document.getElementById('idcard-print-btn');
+
+    // Handler klik tombol "Lihat Biodata"
+    document.addEventListener('click', (e) => {
+        const trigger = e.target.closest('.open-idcard-trigger');
+        if (trigger) {
+            e.preventDefault();
+            const currentProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
+            openIdCardModal(currentProfile);
+        }
+    });
+
+    function getFieldValueFromView(view, labelText, fallback) {
+        if (!view) return fallback;
+        const listItems = view.querySelectorAll('.info-list li');
+        for (let li of listItems) {
+            const lbl = li.querySelector('.label');
+            const val = li.querySelector('.value');
+            if (lbl && val && lbl.textContent.toLowerCase().includes(labelText.toLowerCase())) {
+                return val.textContent.trim();
+            }
+        }
+        return fallback;
+    }
+
+    function openIdCardModal(profileId) {
+        if (!idCardModal) return;
+        const isFebri = profileId === 'fesya';
+        const activeView = isFebri ? profileViews.fesya : profileViews.syifa;
+
+        if (isFebri) {
+            if (idCardBadge) idCardBadge.setAttribute('data-idcard-theme', 'febri');
+            if (idCardPhoto) idCardPhoto.src = 'images/febri.jpg?v=2';
+            if (idCardName) idCardName.textContent = getFieldValueFromView(activeView, 'Nama Lengkap', 'Febriani Isnaini Murath');
+            if (idCardNis) idCardNis.textContent = 'NIS: 2427.12.002 • XII RPL 1';
+            if (idCardTtl) idCardTtl.textContent = getFieldValueFromView(activeView, 'Tempat, Tanggal Lahir', 'Karawang, 05 Februari 2009');
+            if (idCardAgama) idCardAgama.textContent = getFieldValueFromView(activeView, 'Agama', 'Islam') + ' / ' + getFieldValueFromView(activeView, 'Jenis Kelamin', 'Perempuan');
+            if (idCardHobi) idCardHobi.textContent = getFieldValueFromView(activeView, 'Hobi', 'Main Badmintoon, Mendengarkan Musik Dan Main Game');
+            if (idCardCita) idCardCita.textContent = getFieldValueFromView(activeView, 'Cita-Cita', 'Ceo');
+            if (idCardIg) idCardIg.textContent = '@fbri_nxzz';
+            if (idCardSerial) idCardSerial.textContent = 'ID: SMKN1BYS-2024-FEBRI-002';
+        } else {
+            if (idCardBadge) idCardBadge.setAttribute('data-idcard-theme', 'syifa');
+            if (idCardPhoto) idCardPhoto.src = 'images/syifa.jpg?v=2';
+            if (idCardName) idCardName.textContent = getFieldValueFromView(activeView, 'Nama Lengkap', 'Syifa Anggita Ramadani');
+            if (idCardNis) idCardNis.textContent = 'NIS: 2427.12.001 • XII RPL 1';
+            if (idCardTtl) idCardTtl.textContent = getFieldValueFromView(activeView, 'Tempat, Tanggal Lahir', 'Sumedang, 06 September 2008');
+            if (idCardAgama) idCardAgama.textContent = getFieldValueFromView(activeView, 'Agama', 'Islam') + ' / ' + getFieldValueFromView(activeView, 'Jenis Kelamin', 'Perempuan');
+            if (idCardHobi) idCardHobi.textContent = getFieldValueFromView(activeView, 'Hobi', 'Menonton Dan Mendengarkan musik');
+            if (idCardCita) idCardCita.textContent = getFieldValueFromView(activeView, 'Cita-Cita', 'Ceo');
+            if (idCardIg) idCardIg.textContent = '@sfagta_';
+            if (idCardSerial) idCardSerial.textContent = 'ID: SMKN1BYS-2024-SYIFA-001';
+        }
+
+        idCardModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeIdCardModal() {
+        if (!idCardModal) return;
+        idCardModal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    if (idCardCloseBtn) idCardCloseBtn.addEventListener('click', closeIdCardModal);
+    if (idCardCloseBtnBottom) idCardCloseBtnBottom.addEventListener('click', closeIdCardModal);
+
+    if (idCardModal) {
+        idCardModal.addEventListener('click', (e) => {
+            if (e.target === idCardModal) {
+                closeIdCardModal();
+            }
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && idCardModal && !idCardModal.classList.contains('hidden')) {
+            closeIdCardModal();
+        }
+    });
+
+    if (idCardPrintBtn) {
+        idCardPrintBtn.addEventListener('click', () => {
+            window.print();
+        });
+    }
 
     console.log(
         "%c✨ Website Biodata Interaktif Siap Digunakan! ✨\n%cReal-Time Auto-Save aktif: Semua editan tidak akan hilang saat di-refresh.",
