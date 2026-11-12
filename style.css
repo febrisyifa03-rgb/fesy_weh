@@ -145,6 +145,11 @@ html[data-theme="dark"][data-active-profile="fesya"] {
     --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.7);
 }
 
+/* --- Global Utility Classes --- */
+.hidden {
+    display: none !important;
+}
+
 /* --- Reset & Global Base --- */
 *, *::before, *::after {
     margin: 0;

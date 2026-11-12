@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
-    const BUILD_VERSION = 'v2.3_ultra_premium_ui';
+    const BUILD_VERSION = 'v2.4_cute_features_fix';
     if (localStorage.getItem('biodata_build_version') !== BUILD_VERSION) {
         localStorage.removeItem('biodata_html_syifa');
         localStorage.removeItem('biodata_html_fesya');
@@ -767,6 +767,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const febriEmojis = ['⭐', '🚀', '🪐', '🌟', '☄️', '✨', '🎮', '👾', '🌍'];
 
     function spawnCuteParticles(x, y, customEmojis = null) {
+        if (!x && !y) return;
         const currentProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
         const pool = customEmojis || (currentProfile === 'fesya' ? febriEmojis : syifaEmojis);
         const count = 4 + Math.floor(Math.random() * 3); // 4 - 6 partikel
@@ -776,8 +777,8 @@ document.addEventListener('DOMContentLoaded', () => {
             el.className = 'cute-tap-particle';
             el.textContent = pool[Math.floor(Math.random() * pool.length)];
 
-            const dx = (Math.random() - 0.5) * 80; // sebar ke kiri / kanan
-            const rot = (Math.random() - 0.5) * 60; // rotasi
+            const dx = (Math.random() - 0.5) * 80;
+            const rot = (Math.random() - 0.5) * 60;
 
             el.style.left = `${x}px`;
             el.style.top = `${y}px`;
@@ -791,10 +792,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Listener Ketukan di Layar
-    document.addEventListener('pointerdown', (e) => {
-        // Jangan spawn saat sedang mengetik teks di mode edit atau di input
-        if (e.target && (e.target.tagName === 'INPUT' || e.target.isContentEditable)) return;
+    // Listener Ketukan di Layar (Hanya saat klik selesai, tidak mengganggu scroll di HP)
+    document.addEventListener('click', (e) => {
+        if (!e.clientX && !e.clientY) return;
+        if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable)) return;
         spawnCuteParticles(e.clientX, e.clientY);
     });
 
@@ -838,12 +839,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 4000);
     }
 
-    const avatarClickables = document.querySelectorAll('.avatar-clickable');
-    avatarClickables.forEach(ring => {
-        ring.addEventListener('click', (e) => {
-            e.stopPropagation();
+    const avatarClickables = document.querySelectorAll('.avatar-clickable, .avatar-ring, .avatar-img');
+    avatarClickables.forEach(target => {
+        target.addEventListener('click', (e) => {
             const currentProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
-            const rect = ring.getBoundingClientRect();
+            const rect = target.getBoundingClientRect();
             spawnCuteParticles(rect.left + rect.width / 2, rect.top + rect.height / 2);
             handleAvatarClick(currentProfile);
         });
@@ -858,8 +858,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const fortuneQuotes = [
         { text: "Jangan pernah meremehkan setiap baris kode yang kamu tulis. Sukses besar dimulai dari 'Hello World' yang sederhana!", author: "— Syifa & Febri (XII RPL 1)" },
         { text: "Hari ini keberuntunganmu 100%! Kesulitan apa pun pasti bisa kamu selesaikan dengan senyuman. 🌟", author: "— Syifa & Febri (XII RPL 1)" },
-        { text: "Istirahat sebentar, minum air putih, dan dengarkan lagu favoritmu. Otakmu butuh istirahat manis! 🍫", author: "— Syifa Fauziah (XII RPL 1)" },
-        { text: "Fokus ke tujuanmu! Kita berdua sama-sama berjuang menuju cita-cita menjadi CEO handal. 💼🚀", author: "— Febriani Isnaini (XII RPL 1)" },
+        { text: "Istirahat sebentar, minum air putih, dan dengarkan lagu favoritmu. Otakmu butuh istirahat manis! 🍫", author: "— Syifa (XII RPL 1)" },
+        { text: "Fokus ke tujuanmu! Kita berdua sama-sama berjuang menuju cita-cita menjadi CEO handal. 💼🚀", author: "— Febri (XII RPL 1)" },
         { text: "Error dan bug bukan kegagalan, itu cuma tanda kalau kamu selangkah lebih dekat ke solusi terbaik! 💻✨", author: "— Semangat XII RPL 1" },
         { text: "Kamu lebih hebat dari yang kamu kira. Tetap percaya diri dan terus melangkah! 💖", author: "— Syifa & Febri (XII RPL 1)" },
         { text: "Game yang seru itu yang punya banyak rintangan, sama kayak hidup. Selesaikan setiap quest dengan bangga! 🎮", author: "— Febri (XII RPL 1)" },
@@ -868,6 +868,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (cuteFortuneBtn && cuteFortuneCard) {
         cuteFortuneBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             const random = fortuneQuotes[Math.floor(Math.random() * fortuneQuotes.length)];
             if (cuteFortuneText) cuteFortuneText.textContent = `"${random.text}"`;
             if (cuteFortuneAuthor) cuteFortuneAuthor.textContent = random.author;
@@ -881,11 +882,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // E. Floating Cute Cheer Booster Widget
-    const cheerBtn = document.getElementById('cheer-btn');
-    const cheerIcon = document.getElementById('cheer-icon');
-    const cheerLabel = document.getElementById('cheer-label');
-    const cheerCounter = document.getElementById('cheer-counter');
-
     function getCheerCount(profileId) {
         return parseInt(localStorage.getItem(`cheer_count_${profileId}`) || '12', 10);
     }
@@ -903,11 +899,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateCheerWidget(profileId) {
-        if (!cheerBtn) return;
+        const cheerBtnEl = document.getElementById('cheer-btn');
+        if (!cheerBtnEl) return;
+        const iconEl = document.getElementById('cheer-icon');
+        const labelEl = document.getElementById('cheer-label');
+        const counterEl = document.getElementById('cheer-counter');
+
         const isFebri = profileId === 'fesya';
-        if (cheerIcon) cheerIcon.textContent = isFebri ? '⭐' : '💖';
-        if (cheerLabel) cheerLabel.textContent = isFebri ? 'Beri Bintang' : 'Kirim Semangat';
-        if (cheerCounter) cheerCounter.textContent = getCheerCount(profileId);
+        if (iconEl) iconEl.textContent = isFebri ? '⭐' : '💖';
+        if (labelEl) labelEl.textContent = isFebri ? 'Beri Bintang' : 'Kirim Semangat';
+        if (counterEl) counterEl.textContent = getCheerCount(profileId);
     }
 
     // Ambil data awal cheer dari Firebase jika ada
@@ -923,15 +924,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }).catch(() => {});
     }
 
+    const cheerBtn = document.getElementById('cheer-btn');
     if (cheerBtn) {
         cheerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             const currentProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
             const isFebri = currentProfile === 'fesya';
             let currentVal = getCheerCount(currentProfile);
             currentVal += 1;
             setCheerCount(currentProfile, currentVal);
 
-            if (cheerCounter) cheerCounter.textContent = currentVal;
+            const counterEl = document.getElementById('cheer-counter');
+            if (counterEl) counterEl.textContent = currentVal;
             playCuteChime(isFebri ? 'star' : 'bell');
 
             const rect = cheerBtn.getBoundingClientRect();
