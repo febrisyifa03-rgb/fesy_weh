@@ -37,6 +37,6 @@ Kamu bisa mengedit isi biodata secara bebas kapan saja:
 ## 👥 Dua Profil Siswa
 
 - **Syifa Anggita Ramadani** (Aksen: *Elegan Maroon & Putih* 🍷🤍)
-- **Febri** (Aksen: *Cornflower Blue Gradasi* 💙🌊)
+- **Febriani Isnaini Murath** (Aksen: *Cornflower Blue Gradasi* 💙🌊)
 
 Tersedia tombol tab switcher di header untuk berganti profil secara instan.

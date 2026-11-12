@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
-    const BUILD_VERSION = 'v1.3_sd_mandalaherang1';
+    const BUILD_VERSION = 'v1.4_febri_lengkap';
     if (localStorage.getItem('biodata_build_version') !== BUILD_VERSION) {
         localStorage.removeItem('biodata_html_syifa');
         localStorage.removeItem('biodata_html_fesya');
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (profileId === 'fesya') {
             if (logoBadge) logoBadge.textContent = 'F';
             if (logoText) logoText.innerHTML = 'Febri<span>.dev</span>';
-            document.title = 'Biodata Pribadi - Febri (XII RPL 1)';
+            document.title = 'Biodata Pribadi - Febriani Isnaini Murath (XII RPL 1)';
         } else {
             if (logoBadge) logoBadge.textContent = 'S';
             if (logoText) logoText.innerHTML = 'Syifa<span>.dev</span>';
