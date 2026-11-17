@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
-    const BUILD_VERSION = 'v5.0_clean_audio_player';
+    const BUILD_VERSION = 'v5.1_full_audio_no_yt_ui';
     if (localStorage.getItem('biodata_build_version') !== BUILD_VERSION) {
         localStorage.removeItem('biodata_html_syifa');
         localStorage.removeItem('biodata_html_fesya');
@@ -102,8 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Jangan timpa saat pengguna sedang aktif mengetik di mode edit
                     if (isEditMode) return;
 
-                    // Pastikan data Firestore memiliki seksi favorites sebelum menimpa tampilan
-                    if (data && data.syifa && data.syifa.includes('favorites') && profileViews.syifa) {
+                    // Pastikan data Firestore memiliki seksi favorites dan sesuai buildVersion sebelum menimpa tampilan
+                    if (data && data.buildVersion === BUILD_VERSION && data.syifa && data.syifa.includes('favorites') && profileViews.syifa) {
                         profileViews.syifa.innerHTML = data.syifa;
                         const imgSyifa = profileViews.syifa.querySelector('.avatar-img');
                         if (imgSyifa && !imgSyifa.src.startsWith('data:')) {
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         try { localStorage.setItem('biodata_html_syifa', data.syifa); } catch(e){}
                     }
 
-                    if (data && data.fesya && data.fesya.includes('favorites') && profileViews.fesya) {
+                    if (data && data.buildVersion === BUILD_VERSION && data.fesya && data.fesya.includes('favorites') && profileViews.fesya) {
                         profileViews.fesya.innerHTML = data.fesya;
                         const imgFebri = profileViews.fesya.querySelector('.avatar-img');
                         if (imgFebri && !imgFebri.src.startsWith('data:')) {
@@ -345,6 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (db && (htmlSyifaClean || htmlFesyaClean)) {
                 try {
                     const batchData = {};
+                    batchData.buildVersion = BUILD_VERSION;
                     if (htmlSyifaClean) batchData.syifa = htmlSyifaClean;
                     if (htmlFesyaClean) batchData.fesya = htmlFesyaClean;
                     batchData.updatedAt = new Date().toISOString();
@@ -921,10 +922,15 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCheerWidget(initProfile);
 
     // =========================================================================
-    // 9. PEMUTAR MUSIK FAVORIT (REAL AUDIO PLAYER ENGINE)
+    // 9. PEMUTAR MUSIK FAVORIT (HYBRID AUDIO ENGINE: MP3 LOCAL + YOUTUBE OFFSCREEN)
     // =========================================================================
     let currentAudio = null;
     let currentPlayingTrack = null;
+    let currentEngine = null; // 'audio' | 'yt'
+    let ytPlayer = null;
+    let ytReady = false;
+    let ytProgressTimer = null;
+    let isYtPlaying = false;
 
     function formatTime(sec) {
         if (!sec || isNaN(sec)) return '0:00';
@@ -933,7 +939,138 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${m}:${s < 10 ? '0' : ''}${s}`;
     }
 
+    // Inisialisasi YouTube Iframe API Bridge
+    window.onYouTubeIframeAPIReady = function() {
+        try {
+            ytPlayer = new YT.Player('yt-audio-bridge', {
+                height: '200',
+                width: '200',
+                playerVars: {
+                    autoplay: 0,
+                    controls: 0,
+                    disablekb: 1,
+                    fs: 0,
+                    modestbranding: 1,
+                    rel: 0,
+                    playsinline: 1
+                },
+                events: {
+                    onReady: function(event) {
+                        ytReady = true;
+                        try {
+                            event.target.unMute();
+                            event.target.setVolume(100);
+                        } catch(e) {}
+                    },
+                    onStateChange: handleYTStateChange,
+                    onError: function(err) {
+                        console.warn("YouTube Bridge Error:", err);
+                        stopMusic();
+                        showToast("⚠️ Lagu tidak dapat diputar dari sumber saat ini.");
+                    }
+                }
+            });
+        } catch(e) {
+            console.warn("YouTube API Player initialization error:", e);
+        }
+    };
+
+    function startYtProgressTimer(profileSuffix, durationSec) {
+        if (ytProgressTimer) clearInterval(ytProgressTimer);
+        const timeCurrEl = document.getElementById(`time-curr-${profileSuffix}`);
+        const timeDurEl = document.getElementById(`time-dur-${profileSuffix}`);
+        const progressFill = document.getElementById(`progress-fill-${profileSuffix}`);
+
+        ytProgressTimer = setInterval(() => {
+            if (!ytPlayer || !isYtPlaying || typeof ytPlayer.getCurrentTime !== 'function') return;
+            const cur = ytPlayer.getCurrentTime() || 0;
+            const dur = (ytPlayer.getDuration && ytPlayer.getDuration() > 0) ? ytPlayer.getDuration() : durationSec;
+            if (timeCurrEl) timeCurrEl.textContent = formatTime(cur);
+            if (timeDurEl && dur > 0) timeDurEl.textContent = formatTime(dur);
+            if (dur > 0 && progressFill) {
+                const pct = Math.min(100, Math.max(0, (cur / dur) * 100));
+                progressFill.style.width = `${pct}%`;
+            }
+        }, 250);
+    }
+
+    function handleYTStateChange(event) {
+        if (!currentPlayingTrack) return;
+        const profile = currentPlayingTrack.dataset.profile || (htmlElement.getAttribute('data-active-profile') || 'syifa');
+        const isFebri = profile === 'fesya';
+        const profileSuffix = isFebri ? 'febri' : 'syifa';
+        const playerCard = currentPlayingTrack.closest('.music-card-player');
+        const statusEl = document.getElementById(`music-status-${profileSuffix}`);
+        const vinylEl = document.getElementById(`vinyl-${profileSuffix}`);
+        const masterPlayIcon = document.querySelector(`#deck-play-${profileSuffix} i`);
+        const playBtnIcon = currentPlayingTrack.querySelector('.track-play-btn i');
+        const title = currentPlayingTrack.dataset.title || 'Lagu';
+        const artist = currentPlayingTrack.dataset.artist || '';
+
+        // YT.PlayerState.PLAYING = 1
+        if (event.data === 1) {
+            isYtPlaying = true;
+            if (playerCard) playerCard.classList.add('playing');
+            if (vinylEl) vinylEl.classList.add('playing');
+            if (statusEl) statusEl.textContent = 'Sedang Memutar 🎶';
+            if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-pause';
+            if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-pause';
+
+            let durSec = 0;
+            if (currentPlayingTrack.dataset.duration) {
+                const parts = currentPlayingTrack.dataset.duration.split(':');
+                durSec = parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+            }
+            startYtProgressTimer(profileSuffix, durSec);
+
+            if (vinylEl) {
+                const rect = vinylEl.getBoundingClientRect();
+                spawnCuteParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, isFebri ? ['🎶', '🎵', '⭐', '✨', '🚀'] : ['🎶', '🎵', '💖', '✨', '🌸']);
+            }
+            showToast(`🎵 Memutar: ${title} - ${artist}`);
+        }
+        // YT.PlayerState.PAUSED = 2
+        else if (event.data === 2) {
+            isYtPlaying = false;
+            if (playerCard) playerCard.classList.remove('playing');
+            if (vinylEl) vinylEl.classList.remove('playing');
+            if (statusEl) statusEl.textContent = 'Jeda';
+            if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-play';
+            if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-play';
+        }
+        // YT.PlayerState.ENDED = 0
+        else if (event.data === 0) {
+            isYtPlaying = false;
+            if (ytProgressTimer) { clearInterval(ytProgressTimer); ytProgressTimer = null; }
+            if (playerCard) playerCard.classList.remove('playing');
+            if (vinylEl) vinylEl.classList.remove('playing');
+            if (statusEl) statusEl.textContent = 'Selesai Diputar';
+            if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-play';
+            if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-play';
+            const progressFill = document.getElementById(`progress-fill-${profileSuffix}`);
+            if (progressFill) progressFill.style.width = '0%';
+
+            // Putar lagu berikutnya otomatis
+            const nextItem = currentPlayingTrack.nextElementSibling || (playerCard ? playerCard.querySelector('.music-track-item') : null);
+            if (nextItem && nextItem !== currentPlayingTrack) {
+                setTimeout(() => playAudioTrack(nextItem), 800);
+            }
+        }
+        // YT.PlayerState.BUFFERING = 3
+        else if (event.data === 3) {
+            if (statusEl) statusEl.textContent = 'Memuat Lagu... ⏳';
+        }
+    }
+
     function stopMusic() {
+        if (ytProgressTimer) {
+            clearInterval(ytProgressTimer);
+            ytProgressTimer = null;
+        }
+        isYtPlaying = false;
+        if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
+            try { ytPlayer.stopVideo(); } catch(e) {}
+        }
         if (currentAudio) {
             try {
                 currentAudio.pause();
@@ -941,6 +1078,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch(e) {}
             currentAudio = null;
         }
+        currentEngine = null;
         currentPlayingTrack = null;
         document.querySelectorAll('.music-card-player').forEach(c => c.classList.remove('playing'));
         document.querySelectorAll('.music-vinyl-disc').forEach(v => v.classList.remove('playing'));
@@ -958,6 +1096,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const title = trackItem.dataset.title || 'Lagu Pilihan';
         const artist = trackItem.dataset.artist || 'Artis';
         const audioSrc = trackItem.dataset.audio;
+        const ytId = trackItem.dataset.yt;
+        const durationStr = trackItem.dataset.duration || '03:30';
 
         const isFebri = profile === 'fesya';
         const profileSuffix = isFebri ? 'febri' : 'syifa';
@@ -972,37 +1112,56 @@ document.addEventListener('DOMContentLoaded', () => {
         const masterPlayIcon = document.querySelector(`#deck-play-${profileSuffix} i`);
         const playBtnIcon = trackItem.querySelector('.track-play-btn i');
 
-        // Jika lagu yang sama sedang berputar -> PAUSE
         const isSameTrack = currentPlayingTrack === trackItem;
-        const isCurrentlyPlaying = currentAudio && !currentAudio.paused;
 
-        if (isSameTrack && isCurrentlyPlaying) {
-            currentAudio.pause();
-            playerCard.classList.remove('playing');
-            if (vinylEl) vinylEl.classList.remove('playing');
-            if (statusEl) statusEl.textContent = 'Jeda';
-            if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-play';
-            if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-play';
-            showToast('⏸️ Lagu dijeda');
-            return;
+        // 1. Kasus klik track yang sama sedang berputar -> PAUSE / RESUME
+        if (isSameTrack) {
+            if (currentEngine === 'audio' && currentAudio && !currentAudio.paused) {
+                currentAudio.pause();
+                playerCard.classList.remove('playing');
+                if (vinylEl) vinylEl.classList.remove('playing');
+                if (statusEl) statusEl.textContent = 'Jeda';
+                if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-play';
+                if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-play';
+                showToast('⏸️ Lagu dijeda');
+                return;
+            }
+            if (currentEngine === 'audio' && currentAudio && currentAudio.paused) {
+                currentAudio.play().then(() => {
+                    playerCard.classList.add('playing');
+                    if (vinylEl) vinylEl.classList.add('playing');
+                    if (statusEl) statusEl.textContent = 'Sedang Memutar 🎶';
+                    if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-pause';
+                    if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-pause';
+                    showToast(`🎵 Melanjutkan: ${title}`);
+                }).catch(() => {});
+                return;
+            }
+            if (currentEngine === 'yt' && ytPlayer) {
+                if (isYtPlaying) {
+                    try { ytPlayer.pauseVideo(); } catch(e) {}
+                    playerCard.classList.remove('playing');
+                    if (vinylEl) vinylEl.classList.remove('playing');
+                    if (statusEl) statusEl.textContent = 'Jeda';
+                    if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-play';
+                    if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-play';
+                    showToast('⏸️ Lagu dijeda');
+                } else {
+                    try { ytPlayer.playVideo(); } catch(e) {}
+                    playerCard.classList.add('playing');
+                    if (vinylEl) vinylEl.classList.add('playing');
+                    if (statusEl) statusEl.textContent = 'Sedang Memutar 🎶';
+                    if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-pause';
+                    if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-pause';
+                    showToast(`🎵 Melanjutkan: ${title}`);
+                }
+                return;
+            }
         }
 
-        if (isSameTrack && currentAudio && currentAudio.paused) {
-            currentAudio.play().then(() => {
-                playerCard.classList.add('playing');
-                if (vinylEl) vinylEl.classList.add('playing');
-                if (statusEl) statusEl.textContent = 'Sedang Memutar 🎶';
-                if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-pause';
-                if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-pause';
-                showToast(`🎵 Memutar: ${title}`);
-            }).catch(() => {});
-            return;
-        }
-
-        // Lagu baru dipilih -> stop audio sebelumnya
+        // 2. Track baru dipilih -> stop track sebelumnya
         stopMusic();
 
-        // Tandai track yang aktif
         playerCard.querySelectorAll('.music-track-item').forEach(t => {
             t.classList.remove('active');
             const icon = t.querySelector('.track-play-btn i');
@@ -1014,14 +1173,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (titleEl) titleEl.textContent = title;
         if (artistEl) artistEl.textContent = artist;
+        if (timeDurEl) timeDurEl.textContent = durationStr;
+        if (timeCurrEl) timeCurrEl.textContent = '0:00';
+        if (progressFill) progressFill.style.width = '0%';
         if (statusEl) statusEl.textContent = 'Memuat Lagu...';
 
-        if (audioSrc) {
+        // 3. Eksekusi Engine: MP3 direct file atau YouTube Audio Bridge
+        if (audioSrc && audioSrc.endsWith('.mp3')) {
+            currentEngine = 'audio';
             currentAudio = new Audio(audioSrc);
             currentAudio.preload = 'auto';
 
             currentAudio.addEventListener('loadedmetadata', () => {
-                if (timeDurEl) timeDurEl.textContent = formatTime(currentAudio.duration);
+                if (timeDurEl && currentAudio.duration) {
+                    timeDurEl.textContent = formatTime(currentAudio.duration);
+                }
             });
 
             currentAudio.addEventListener('timeupdate', () => {
@@ -1043,7 +1209,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-play';
                 if (progressFill) progressFill.style.width = '0%';
 
-                // Otomatis putar lagu berikutnya di playlist
                 const nextItem = trackItem.nextElementSibling || playerCard.querySelector('.music-track-item');
                 if (nextItem && nextItem !== trackItem) {
                     setTimeout(() => playAudioTrack(nextItem), 800);
@@ -1059,14 +1224,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (vinylEl) {
                     const rect = vinylEl.getBoundingClientRect();
-                    spawnCuteParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, ['🎶', '🎵', '🎧', '✨', '💫']);
+                    spawnCuteParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, isFebri ? ['🎶', '🎵', '⭐', '✨', '🚀'] : ['🎶', '🎵', '💖', '✨', '🌸']);
                 }
-
                 showToast(`🎵 Memutar: ${title} - ${artist}`);
             }).catch(err => {
                 console.warn("Audio play error:", err);
                 if (statusEl) statusEl.textContent = 'Klik untuk Memutar';
             });
+        } else if (ytId) {
+            currentEngine = 'yt';
+            if (ytPlayer && ytReady && typeof ytPlayer.loadVideoById === 'function') {
+                try {
+                    ytPlayer.loadVideoById({
+                        videoId: ytId,
+                        startSeconds: 0
+                    });
+                    if (statusEl) statusEl.textContent = 'Menghubungkan Audio...';
+                } catch(e) {
+                    console.warn("Error loading YouTube video:", e);
+                }
+            } else {
+                if (statusEl) statusEl.textContent = 'Menyiapkan Pemutar...';
+                setTimeout(() => {
+                    if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+                        ytPlayer.loadVideoById({ videoId: ytId, startSeconds: 0 });
+                    }
+                }, 1000);
+            }
         }
     }
 
@@ -1100,10 +1284,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', (e) => {
         // 0. Klik Progress Seekbar Lagu
         const progressBar = e.target.closest('.music-progress-bar');
-        if (progressBar && currentAudio && currentAudio.duration) {
+        if (progressBar) {
             const rect = progressBar.getBoundingClientRect();
             const clickPos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-            currentAudio.currentTime = clickPos * currentAudio.duration;
+            if (currentEngine === 'audio' && currentAudio && currentAudio.duration) {
+                currentAudio.currentTime = clickPos * currentAudio.duration;
+            } else if (currentEngine === 'yt' && ytPlayer && typeof ytPlayer.getDuration === 'function') {
+                const dur = ytPlayer.getDuration();
+                if (dur > 0) {
+                    ytPlayer.seekTo(clickPos * dur, true);
+                }
+            }
             return;
         }
 
