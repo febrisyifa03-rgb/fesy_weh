@@ -10,10 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- YouTube Iframe API untuk Full Audio Streaming Tanpa UI Video -->
-    <script src="https://www.youtube.com/iframe_api"></script>
     <!-- CSS Utama -->
-    <link rel="stylesheet" href="style.css?v=5.1">
+    <link rel="stylesheet" href="style.css?v=5.2">
 </head>
 <body>
     <!-- Background Floating Blobs -->
@@ -479,7 +477,7 @@
                                 <span class="playlist-count">3 Lagu Full</span>
                             </div>
                             <div class="music-track-list">
-                                <div class="music-track-item active" data-profile="syifa" data-index="0" data-title="Jatuh Suka" data-artist="Tulus" data-audio="audio/jatuh_suka.mp3" data-yt="2uJut6USftQ" data-duration="03:54">
+                                <div class="music-track-item active" data-profile="syifa" data-index="0" data-title="Jatuh Suka" data-artist="Tulus" data-audio="audio/jatuh_suka.mp3" data-duration="03:54">
                                     <div class="track-number"><i class="fa-solid fa-play"></i></div>
                                     <div class="track-info">
                                         <span class="track-title">Jatuh Suka</span>
@@ -490,7 +488,7 @@
                                     <button type="button" class="track-play-btn" aria-label="Putar lagu"><i class="fa-solid fa-play"></i></button>
                                 </div>
 
-                                <div class="music-track-item" data-profile="syifa" data-index="1" data-title="Treat You Better" data-artist="Shawn Mendes" data-yt="lY2yjAdbvdQ" data-duration="03:07">
+                                <div class="music-track-item" data-profile="syifa" data-index="1" data-title="Treat You Better" data-artist="Shawn Mendes" data-audio="audio/treat_you_better.mp3" data-duration="03:07">
                                     <div class="track-number">2</div>
                                     <div class="track-info">
                                         <span class="track-title">Treat You Better</span>
@@ -501,7 +499,7 @@
                                     <button type="button" class="track-play-btn" aria-label="Putar lagu"><i class="fa-solid fa-play"></i></button>
                                 </div>
 
-                                <div class="music-track-item" data-profile="syifa" data-index="2" data-title="Iris" data-artist="Goo Goo Dolls" data-yt="CUbJQGqFoi0" data-duration="04:49">
+                                <div class="music-track-item" data-profile="syifa" data-index="2" data-title="Iris" data-artist="Goo Goo Dolls" data-audio="audio/iris.mp3" data-duration="04:49">
                                     <div class="track-number">3</div>
                                     <div class="track-info">
                                         <span class="track-title">Iris</span>
@@ -928,7 +926,7 @@
                                 <span class="playlist-count">3 Lagu Full</span>
                             </div>
                             <div class="music-track-list">
-                                <div class="music-track-item active" data-profile="fesya" data-index="0" data-title="Sesi Potret" data-artist="eńau feat. Ari Lesmana" data-audio="audio/sesi_potret.mp3" data-yt="Nskf70DMR60" data-duration="04:18">
+                                <div class="music-track-item active" data-profile="fesya" data-index="0" data-title="Sesi Potret" data-artist="eńau feat. Ari Lesmana" data-audio="audio/sesi_potret.mp3" data-duration="04:18">
                                     <div class="track-number"><i class="fa-solid fa-play"></i></div>
                                     <div class="track-info">
                                         <span class="track-title">Sesi Potret</span>
@@ -939,7 +937,7 @@
                                     <button type="button" class="track-play-btn" aria-label="Putar lagu"><i class="fa-solid fa-play"></i></button>
                                 </div>
 
-                                <div class="music-track-item" data-profile="fesya" data-index="1" data-title="Ndoro Ayu" data-artist="Cindi Cintya" data-yt="rsaOSb73mO0" data-duration="04:15">
+                                <div class="music-track-item" data-profile="fesya" data-index="1" data-title="Ndoro Ayu" data-artist="Cindi Cintya" data-audio="audio/ndoro_ayu.mp3" data-duration="04:15">
                                     <div class="track-number">2</div>
                                     <div class="track-info">
                                         <span class="track-title">Ndoro Ayu</span>
@@ -950,7 +948,7 @@
                                     <button type="button" class="track-play-btn" aria-label="Putar lagu"><i class="fa-solid fa-play"></i></button>
                                 </div>
 
-                                <div class="music-track-item" data-profile="fesya" data-index="2" data-title="Sewates Gandrung" data-artist="Wahyu F Giri" data-yt="7JSYNfe3L-s" data-duration="05:14">
+                                <div class="music-track-item" data-profile="fesya" data-index="2" data-title="Sewates Gandrung" data-artist="Wahyu F Giri" data-audio="audio/sewates_gandrung.mp3" data-duration="05:14">
                                     <div class="track-number">3</div>
                                     <div class="track-info">
                                         <span class="track-title">Sewates Gandrung</span>
@@ -1228,16 +1226,11 @@
         <span id="toast-msg">Data berhasil disimpan!</span>
     </div>
 
-    <!-- Hidden Offscreen YouTube Player Host (Zero visual UI, streaming audio full) -->
-    <div id="yt-player-host" style="position:fixed;bottom:-9999px;left:-9999px;width:200px;height:200px;opacity:0.001;pointer-events:none;z-index:-9999;overflow:hidden;" aria-hidden="true">
-        <div id="yt-audio-bridge"></div>
-    </div>
-
     <!-- Firebase SDK (Official Compat) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
     <!-- JavaScript Utama -->
-    <script src="script.js?v=5.1"></script>
+    <script src="script.js?v=5.2"></script>
 </body>
 </html>

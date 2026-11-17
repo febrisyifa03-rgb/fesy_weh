@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
-    const BUILD_VERSION = 'v5.1_full_audio_no_yt_ui';
+    const BUILD_VERSION = 'v5.2_all_full_local_mp3';
     if (localStorage.getItem('biodata_build_version') !== BUILD_VERSION) {
         localStorage.removeItem('biodata_html_syifa');
         localStorage.removeItem('biodata_html_fesya');
@@ -922,15 +922,10 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCheerWidget(initProfile);
 
     // =========================================================================
-    // 9. PEMUTAR MUSIK FAVORIT (HYBRID AUDIO ENGINE: MP3 LOCAL + YOUTUBE OFFSCREEN)
+    // 9. PEMUTAR MUSIK FAVORIT (100% DIRECT AUDIO ENGINE - FULL TRACK MP3)
     // =========================================================================
     let currentAudio = null;
     let currentPlayingTrack = null;
-    let currentEngine = null; // 'audio' | 'yt'
-    let ytPlayer = null;
-    let ytReady = false;
-    let ytProgressTimer = null;
-    let isYtPlaying = false;
 
     function formatTime(sec) {
         if (!sec || isNaN(sec)) return '0:00';
@@ -939,138 +934,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${m}:${s < 10 ? '0' : ''}${s}`;
     }
 
-    // Inisialisasi YouTube Iframe API Bridge
-    window.onYouTubeIframeAPIReady = function() {
-        try {
-            ytPlayer = new YT.Player('yt-audio-bridge', {
-                height: '200',
-                width: '200',
-                playerVars: {
-                    autoplay: 0,
-                    controls: 0,
-                    disablekb: 1,
-                    fs: 0,
-                    modestbranding: 1,
-                    rel: 0,
-                    playsinline: 1
-                },
-                events: {
-                    onReady: function(event) {
-                        ytReady = true;
-                        try {
-                            event.target.unMute();
-                            event.target.setVolume(100);
-                        } catch(e) {}
-                    },
-                    onStateChange: handleYTStateChange,
-                    onError: function(err) {
-                        console.warn("YouTube Bridge Error:", err);
-                        stopMusic();
-                        showToast("⚠️ Lagu tidak dapat diputar dari sumber saat ini.");
-                    }
-                }
-            });
-        } catch(e) {
-            console.warn("YouTube API Player initialization error:", e);
-        }
-    };
-
-    function startYtProgressTimer(profileSuffix, durationSec) {
-        if (ytProgressTimer) clearInterval(ytProgressTimer);
-        const timeCurrEl = document.getElementById(`time-curr-${profileSuffix}`);
-        const timeDurEl = document.getElementById(`time-dur-${profileSuffix}`);
-        const progressFill = document.getElementById(`progress-fill-${profileSuffix}`);
-
-        ytProgressTimer = setInterval(() => {
-            if (!ytPlayer || !isYtPlaying || typeof ytPlayer.getCurrentTime !== 'function') return;
-            const cur = ytPlayer.getCurrentTime() || 0;
-            const dur = (ytPlayer.getDuration && ytPlayer.getDuration() > 0) ? ytPlayer.getDuration() : durationSec;
-            if (timeCurrEl) timeCurrEl.textContent = formatTime(cur);
-            if (timeDurEl && dur > 0) timeDurEl.textContent = formatTime(dur);
-            if (dur > 0 && progressFill) {
-                const pct = Math.min(100, Math.max(0, (cur / dur) * 100));
-                progressFill.style.width = `${pct}%`;
-            }
-        }, 250);
-    }
-
-    function handleYTStateChange(event) {
-        if (!currentPlayingTrack) return;
-        const profile = currentPlayingTrack.dataset.profile || (htmlElement.getAttribute('data-active-profile') || 'syifa');
-        const isFebri = profile === 'fesya';
-        const profileSuffix = isFebri ? 'febri' : 'syifa';
-        const playerCard = currentPlayingTrack.closest('.music-card-player');
-        const statusEl = document.getElementById(`music-status-${profileSuffix}`);
-        const vinylEl = document.getElementById(`vinyl-${profileSuffix}`);
-        const masterPlayIcon = document.querySelector(`#deck-play-${profileSuffix} i`);
-        const playBtnIcon = currentPlayingTrack.querySelector('.track-play-btn i');
-        const title = currentPlayingTrack.dataset.title || 'Lagu';
-        const artist = currentPlayingTrack.dataset.artist || '';
-
-        // YT.PlayerState.PLAYING = 1
-        if (event.data === 1) {
-            isYtPlaying = true;
-            if (playerCard) playerCard.classList.add('playing');
-            if (vinylEl) vinylEl.classList.add('playing');
-            if (statusEl) statusEl.textContent = 'Sedang Memutar 🎶';
-            if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-pause';
-            if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-pause';
-
-            let durSec = 0;
-            if (currentPlayingTrack.dataset.duration) {
-                const parts = currentPlayingTrack.dataset.duration.split(':');
-                durSec = parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
-            }
-            startYtProgressTimer(profileSuffix, durSec);
-
-            if (vinylEl) {
-                const rect = vinylEl.getBoundingClientRect();
-                spawnCuteParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, isFebri ? ['🎶', '🎵', '⭐', '✨', '🚀'] : ['🎶', '🎵', '💖', '✨', '🌸']);
-            }
-            showToast(`🎵 Memutar: ${title} - ${artist}`);
-        }
-        // YT.PlayerState.PAUSED = 2
-        else if (event.data === 2) {
-            isYtPlaying = false;
-            if (playerCard) playerCard.classList.remove('playing');
-            if (vinylEl) vinylEl.classList.remove('playing');
-            if (statusEl) statusEl.textContent = 'Jeda';
-            if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-play';
-            if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-play';
-        }
-        // YT.PlayerState.ENDED = 0
-        else if (event.data === 0) {
-            isYtPlaying = false;
-            if (ytProgressTimer) { clearInterval(ytProgressTimer); ytProgressTimer = null; }
-            if (playerCard) playerCard.classList.remove('playing');
-            if (vinylEl) vinylEl.classList.remove('playing');
-            if (statusEl) statusEl.textContent = 'Selesai Diputar';
-            if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-play';
-            if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-play';
-            const progressFill = document.getElementById(`progress-fill-${profileSuffix}`);
-            if (progressFill) progressFill.style.width = '0%';
-
-            // Putar lagu berikutnya otomatis
-            const nextItem = currentPlayingTrack.nextElementSibling || (playerCard ? playerCard.querySelector('.music-track-item') : null);
-            if (nextItem && nextItem !== currentPlayingTrack) {
-                setTimeout(() => playAudioTrack(nextItem), 800);
-            }
-        }
-        // YT.PlayerState.BUFFERING = 3
-        else if (event.data === 3) {
-            if (statusEl) statusEl.textContent = 'Memuat Lagu... ⏳';
-        }
-    }
-
     function stopMusic() {
-        if (ytProgressTimer) {
-            clearInterval(ytProgressTimer);
-            ytProgressTimer = null;
-        }
-        isYtPlaying = false;
-        if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
-            try { ytPlayer.stopVideo(); } catch(e) {}
-        }
         if (currentAudio) {
             try {
                 currentAudio.pause();
@@ -1078,7 +942,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch(e) {}
             currentAudio = null;
         }
-        currentEngine = null;
         currentPlayingTrack = null;
         document.querySelectorAll('.music-card-player').forEach(c => c.classList.remove('playing'));
         document.querySelectorAll('.music-vinyl-disc').forEach(v => v.classList.remove('playing'));
@@ -1096,7 +959,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const title = trackItem.dataset.title || 'Lagu Pilihan';
         const artist = trackItem.dataset.artist || 'Artis';
         const audioSrc = trackItem.dataset.audio;
-        const ytId = trackItem.dataset.yt;
         const durationStr = trackItem.dataset.duration || '03:30';
 
         const isFebri = profile === 'fesya';
@@ -1115,8 +977,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const isSameTrack = currentPlayingTrack === trackItem;
 
         // 1. Kasus klik track yang sama sedang berputar -> PAUSE / RESUME
-        if (isSameTrack) {
-            if (currentEngine === 'audio' && currentAudio && !currentAudio.paused) {
+        if (isSameTrack && currentAudio) {
+            if (!currentAudio.paused) {
                 currentAudio.pause();
                 playerCard.classList.remove('playing');
                 if (vinylEl) vinylEl.classList.remove('playing');
@@ -1125,8 +987,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-play';
                 showToast('⏸️ Lagu dijeda');
                 return;
-            }
-            if (currentEngine === 'audio' && currentAudio && currentAudio.paused) {
+            } else {
                 currentAudio.play().then(() => {
                     playerCard.classList.add('playing');
                     if (vinylEl) vinylEl.classList.add('playing');
@@ -1137,29 +998,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }).catch(() => {});
                 return;
             }
-            if (currentEngine === 'yt' && ytPlayer) {
-                if (isYtPlaying) {
-                    try { ytPlayer.pauseVideo(); } catch(e) {}
-                    playerCard.classList.remove('playing');
-                    if (vinylEl) vinylEl.classList.remove('playing');
-                    if (statusEl) statusEl.textContent = 'Jeda';
-                    if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-play';
-                    if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-play';
-                    showToast('⏸️ Lagu dijeda');
-                } else {
-                    try { ytPlayer.playVideo(); } catch(e) {}
-                    playerCard.classList.add('playing');
-                    if (vinylEl) vinylEl.classList.add('playing');
-                    if (statusEl) statusEl.textContent = 'Sedang Memutar 🎶';
-                    if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-pause';
-                    if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-pause';
-                    showToast(`🎵 Melanjutkan: ${title}`);
-                }
-                return;
-            }
         }
 
-        // 2. Track baru dipilih -> stop track sebelumnya
+        // 2. Track baru dipilih -> hentikan lagu sebelumnya
         stopMusic();
 
         playerCard.querySelectorAll('.music-track-item').forEach(t => {
@@ -1178,9 +1019,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (progressFill) progressFill.style.width = '0%';
         if (statusEl) statusEl.textContent = 'Memuat Lagu...';
 
-        // 3. Eksekusi Engine: MP3 direct file atau YouTube Audio Bridge
-        if (audioSrc && audioSrc.endsWith('.mp3')) {
-            currentEngine = 'audio';
+        // 3. Putar direct audio file
+        if (audioSrc) {
             currentAudio = new Audio(audioSrc);
             currentAudio.preload = 'auto';
 
@@ -1196,7 +1036,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const dur = currentAudio.duration;
                 if (timeCurrEl) timeCurrEl.textContent = formatTime(cur);
                 if (dur && progressFill) {
-                    const pct = (cur / dur) * 100;
+                    const pct = Math.min(100, Math.max(0, (cur / dur) * 100));
                     progressFill.style.width = `${pct}%`;
                 }
             });
@@ -1231,26 +1071,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.warn("Audio play error:", err);
                 if (statusEl) statusEl.textContent = 'Klik untuk Memutar';
             });
-        } else if (ytId) {
-            currentEngine = 'yt';
-            if (ytPlayer && ytReady && typeof ytPlayer.loadVideoById === 'function') {
-                try {
-                    ytPlayer.loadVideoById({
-                        videoId: ytId,
-                        startSeconds: 0
-                    });
-                    if (statusEl) statusEl.textContent = 'Menghubungkan Audio...';
-                } catch(e) {
-                    console.warn("Error loading YouTube video:", e);
-                }
-            } else {
-                if (statusEl) statusEl.textContent = 'Menyiapkan Pemutar...';
-                setTimeout(() => {
-                    if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
-                        ytPlayer.loadVideoById({ videoId: ytId, startSeconds: 0 });
-                    }
-                }, 1000);
-            }
         }
     }
 
@@ -1284,17 +1104,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', (e) => {
         // 0. Klik Progress Seekbar Lagu
         const progressBar = e.target.closest('.music-progress-bar');
-        if (progressBar) {
+        if (progressBar && currentAudio && currentAudio.duration) {
             const rect = progressBar.getBoundingClientRect();
             const clickPos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-            if (currentEngine === 'audio' && currentAudio && currentAudio.duration) {
-                currentAudio.currentTime = clickPos * currentAudio.duration;
-            } else if (currentEngine === 'yt' && ytPlayer && typeof ytPlayer.getDuration === 'function') {
-                const dur = ytPlayer.getDuration();
-                if (dur > 0) {
-                    ytPlayer.seekTo(clickPos * dur, true);
-                }
-            }
+            currentAudio.currentTime = clickPos * currentAudio.duration;
             return;
         }
 
