@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
-    const BUILD_VERSION = 'v4.0_favorites_and_music';
+    const BUILD_VERSION = 'v5.0_clean_audio_player';
     if (localStorage.getItem('biodata_build_version') !== BUILD_VERSION) {
         localStorage.removeItem('biodata_html_syifa');
         localStorage.removeItem('biodata_html_fesya');
@@ -921,36 +921,35 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCheerWidget(initProfile);
 
     // =========================================================================
-    // 9. PEMUTAR MUSIK FAVORIT & REAL AUDIO PLAYER
+    // 9. PEMUTAR MUSIK FAVORIT (REAL AUDIO PLAYER ENGINE)
     // =========================================================================
-    let currentAudioObj = null;
-    let currentPlayingTrackEl = null;
+    let currentAudio = null;
+    let currentPlayingTrack = null;
 
-    function formatMusicTime(seconds) {
-        if (!seconds || isNaN(seconds)) return '0:00';
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    function formatTime(sec) {
+        if (!sec || isNaN(sec)) return '0:00';
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return `${m}:${s < 10 ? '0' : ''}${s}`;
     }
 
-    function stopAllMusic() {
-        if (currentAudioObj) {
+    function stopMusic() {
+        if (currentAudio) {
             try {
-                currentAudioObj.pause();
-                currentAudioObj.currentTime = 0;
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
             } catch(e) {}
-            currentAudioObj = null;
+            currentAudio = null;
         }
-        currentPlayingTrackEl = null;
-        document.querySelectorAll('.music-card-player').forEach(card => card.classList.remove('playing'));
-        document.querySelectorAll('.music-vinyl-disc').forEach(vinyl => vinyl.classList.remove('playing'));
-        document.querySelectorAll('.track-play-btn i').forEach(icon => {
+        currentPlayingTrack = null;
+        document.querySelectorAll('.music-card-player').forEach(c => c.classList.remove('playing'));
+        document.querySelectorAll('.music-vinyl-disc').forEach(v => v.classList.remove('playing'));
+        document.querySelectorAll('.track-play-btn i, .deck-play-btn i').forEach(icon => {
             icon.className = 'fa-solid fa-play';
         });
-        document.querySelectorAll('.music-track-item').forEach(item => item.classList.remove('active'));
     }
 
-    function handleMusicTrackClick(trackItem) {
+    function playAudioTrack(trackItem) {
         if (!trackItem) return;
         const playerCard = trackItem.closest('.music-card-player');
         if (!playerCard) return;
@@ -970,78 +969,93 @@ document.addEventListener('DOMContentLoaded', () => {
         const progressFill = document.getElementById(`progress-fill-${profileSuffix}`);
         const timeCurrEl = document.getElementById(`time-curr-${profileSuffix}`);
         const timeDurEl = document.getElementById(`time-dur-${profileSuffix}`);
+        const masterPlayIcon = document.querySelector(`#deck-play-${profileSuffix} i`);
         const playBtnIcon = trackItem.querySelector('.track-play-btn i');
 
-        const isSameTrack = currentPlayingTrackEl === trackItem;
-        const isAudioPlaying = currentAudioObj && !currentAudioObj.paused;
+        // Jika lagu yang sama sedang berputar -> PAUSE
+        const isSameTrack = currentPlayingTrack === trackItem;
+        const isCurrentlyPlaying = currentAudio && !currentAudio.paused;
 
-        if (isSameTrack && isAudioPlaying) {
-            // User clicked currently playing song -> PAUSE
-            currentAudioObj.pause();
+        if (isSameTrack && isCurrentlyPlaying) {
+            currentAudio.pause();
             playerCard.classList.remove('playing');
             if (vinylEl) vinylEl.classList.remove('playing');
             if (statusEl) statusEl.textContent = 'Jeda';
             if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-play';
-            showToast('⏸️ Pemutaran musik dijeda');
+            if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-play';
+            showToast('⏸️ Lagu dijeda');
             return;
         }
 
-        if (isSameTrack && currentAudioObj && currentAudioObj.paused) {
-            // RESUME
-            currentAudioObj.play().then(() => {
+        if (isSameTrack && currentAudio && currentAudio.paused) {
+            currentAudio.play().then(() => {
                 playerCard.classList.add('playing');
                 if (vinylEl) vinylEl.classList.add('playing');
                 if (statusEl) statusEl.textContent = 'Sedang Memutar 🎶';
                 if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-pause';
-                showToast(`🎵 Melanjutkan: ${title}`);
+                if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-pause';
+                showToast(`🎵 Memutar: ${title}`);
             }).catch(() => {});
             return;
         }
 
-        // New track selected -> stop previous track
-        stopAllMusic();
+        // Lagu baru dipilih -> stop audio sebelumnya
+        stopMusic();
 
-        // Mark clicked track as active
+        // Tandai track yang aktif
+        playerCard.querySelectorAll('.music-track-item').forEach(t => {
+            t.classList.remove('active');
+            const icon = t.querySelector('.track-play-btn i');
+            if (icon) icon.className = 'fa-solid fa-play';
+        });
+
         trackItem.classList.add('active');
-        currentPlayingTrackEl = trackItem;
+        currentPlayingTrack = trackItem;
 
         if (titleEl) titleEl.textContent = title;
         if (artistEl) artistEl.textContent = artist;
         if (statusEl) statusEl.textContent = 'Memuat Lagu...';
-        if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-spinner fa-spin';
 
         if (audioSrc) {
-            currentAudioObj = new Audio(audioSrc);
-            currentAudioObj.preload = 'auto';
+            currentAudio = new Audio(audioSrc);
+            currentAudio.preload = 'auto';
 
-            currentAudioObj.addEventListener('loadedmetadata', () => {
-                if (timeDurEl) timeDurEl.textContent = formatMusicTime(currentAudioObj.duration);
+            currentAudio.addEventListener('loadedmetadata', () => {
+                if (timeDurEl) timeDurEl.textContent = formatTime(currentAudio.duration);
             });
 
-            currentAudioObj.addEventListener('timeupdate', () => {
-                if (!currentAudioObj) return;
-                const cur = currentAudioObj.currentTime;
-                const dur = currentAudioObj.duration;
-                if (timeCurrEl) timeCurrEl.textContent = formatMusicTime(cur);
+            currentAudio.addEventListener('timeupdate', () => {
+                if (!currentAudio) return;
+                const cur = currentAudio.currentTime;
+                const dur = currentAudio.duration;
+                if (timeCurrEl) timeCurrEl.textContent = formatTime(cur);
                 if (dur && progressFill) {
                     const pct = (cur / dur) * 100;
                     progressFill.style.width = `${pct}%`;
                 }
             });
 
-            currentAudioObj.addEventListener('ended', () => {
+            currentAudio.addEventListener('ended', () => {
                 playerCard.classList.remove('playing');
                 if (vinylEl) vinylEl.classList.remove('playing');
                 if (statusEl) statusEl.textContent = 'Selesai Diputar';
                 if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-play';
+                if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-play';
                 if (progressFill) progressFill.style.width = '0%';
+
+                // Otomatis putar lagu berikutnya di playlist
+                const nextItem = trackItem.nextElementSibling || playerCard.querySelector('.music-track-item');
+                if (nextItem && nextItem !== trackItem) {
+                    setTimeout(() => playAudioTrack(nextItem), 800);
+                }
             });
 
-            currentAudioObj.play().then(() => {
+            currentAudio.play().then(() => {
                 playerCard.classList.add('playing');
                 if (vinylEl) vinylEl.classList.add('playing');
                 if (statusEl) statusEl.textContent = 'Sedang Memutar 🎶';
                 if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-pause';
+                if (masterPlayIcon) masterPlayIcon.className = 'fa-solid fa-pause';
 
                 if (vinylEl) {
                     const rect = vinylEl.getBoundingClientRect();
@@ -1051,28 +1065,70 @@ document.addEventListener('DOMContentLoaded', () => {
                 showToast(`🎵 Memutar: ${title} - ${artist}`);
             }).catch(err => {
                 console.warn("Audio play error:", err);
-                if (playBtnIcon) playBtnIcon.className = 'fa-solid fa-pause';
-                if (statusEl) statusEl.textContent = 'Sedang Memutar 🎶';
-                playerCard.classList.add('playing');
-                if (vinylEl) vinylEl.classList.add('playing');
+                if (statusEl) statusEl.textContent = 'Klik untuk Memutar';
             });
         }
     }
 
-    // Listener interaktif klik seekbar progress lagu
-    document.querySelectorAll('.music-progress-bar').forEach(bar => {
-        bar.addEventListener('click', (e) => {
-            if (!currentAudioObj || !currentAudioObj.duration) return;
-            const rect = bar.getBoundingClientRect();
-            const clickPos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-            currentAudioObj.currentTime = clickPos * currentAudioObj.duration;
-        });
-    });
+    function handleMasterPlayClick(profile) {
+        const card = document.querySelector(`.music-card-player[data-player-for="${profile}"]`);
+        if (!card) return;
+        const activeItem = card.querySelector('.music-track-item.active') || card.querySelector('.music-track-item');
+        if (activeItem) playAudioTrack(activeItem);
+    }
+
+    function handleNextTrack(profile) {
+        const card = document.querySelector(`.music-card-player[data-player-for="${profile}"]`);
+        if (!card) return;
+        const activeItem = card.querySelector('.music-track-item.active');
+        const nextItem = (activeItem && activeItem.nextElementSibling) ? activeItem.nextElementSibling : card.querySelector('.music-track-item');
+        if (nextItem) playAudioTrack(nextItem);
+    }
+
+    function handlePrevTrack(profile) {
+        const card = document.querySelector(`.music-card-player[data-player-for="${profile}"]`);
+        if (!card) return;
+        const activeItem = card.querySelector('.music-track-item.active');
+        const allItems = card.querySelectorAll('.music-track-item');
+        const prevItem = (activeItem && activeItem.previousElementSibling) ? activeItem.previousElementSibling : allItems[allItems.length - 1];
+        if (prevItem) playAudioTrack(prevItem);
+    }
 
     // =========================================================================
     // F. UNIFIED EVENT DELEGATION UNTUK SEMUA ELEMEN LUCU & KLIK
     // =========================================================================
     document.addEventListener('click', (e) => {
+        // 0. Klik Progress Seekbar Lagu
+        const progressBar = e.target.closest('.music-progress-bar');
+        if (progressBar && currentAudio && currentAudio.duration) {
+            const rect = progressBar.getBoundingClientRect();
+            const clickPos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+            currentAudio.currentTime = clickPos * currentAudio.duration;
+            return;
+        }
+
+        // 0.1 Klik Tombol Master Play / Prev / Next di Deck
+        const masterPlayBtn = e.target.closest('.deck-play-btn');
+        if (masterPlayBtn) {
+            const p = masterPlayBtn.dataset.profile || (htmlElement.getAttribute('data-active-profile') || 'syifa');
+            handleMasterPlayClick(p);
+            return;
+        }
+
+        const nextBtn = e.target.closest('.deck-next-btn');
+        if (nextBtn) {
+            const p = nextBtn.dataset.profile || (htmlElement.getAttribute('data-active-profile') || 'syifa');
+            handleNextTrack(p);
+            return;
+        }
+
+        const prevBtn = e.target.closest('.deck-prev-btn');
+        if (prevBtn) {
+            const p = prevBtn.dataset.profile || (htmlElement.getAttribute('data-active-profile') || 'syifa');
+            handlePrevTrack(p);
+            return;
+        }
+
         // 1. Klik Foto Avatar Profil
         const avatarTarget = e.target.closest('.avatar-ring, .avatar-clickable');
         if (avatarTarget) {
@@ -1133,7 +1189,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (trackTrigger) {
             const item = trackTrigger.closest('.music-track-item');
             if (item) {
-                handleMusicTrackClick(item);
+                playAudioTrack(item);
                 return;
             }
         }

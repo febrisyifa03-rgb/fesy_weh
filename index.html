@@ -11,7 +11,7 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- CSS Utama -->
-    <link rel="stylesheet" href="style.css?v=4.0">
+    <link rel="stylesheet" href="style.css?v=5.0">
 </head>
 <body>
     <!-- Background Floating Blobs -->
@@ -462,8 +462,8 @@
                                     <span class="music-dot-pulse"></span>
                                     <span class="music-status-text" id="music-status-syifa">Siap Diputar</span>
                                 </div>
-                                <h3 class="now-playing-title" id="now-title-syifa">Treat You Better</h3>
-                                <p class="now-playing-artist" id="now-artist-syifa">Shawn Mendes • Pop</p>
+                                <h3 class="now-playing-title" id="now-title-syifa">Jatuh Suka</h3>
+                                <p class="now-playing-artist" id="now-artist-syifa">Tulus • Pop Indonesia</p>
 
                                 <div class="music-equalizer" id="equalizer-syifa">
                                     <span class="bar bar-1"></span>
@@ -474,7 +474,7 @@
                                 </div>
 
                                 <div class="music-progress-container">
-                                    <div class="music-progress-bar" id="music-progress-syifa">
+                                    <div class="music-progress-bar" id="music-progress-syifa" title="Klik untuk melompat ke bagian lagu">
                                         <div class="music-progress-fill" id="progress-fill-syifa"></div>
                                     </div>
                                     <div class="music-time-display">
@@ -482,17 +482,34 @@
                                         <span class="music-time-duration" id="time-dur-syifa">0:30</span>
                                     </div>
                                 </div>
+
+                                <div class="music-deck-controls">
+                                    <button type="button" class="deck-ctrl-btn deck-prev-btn" data-profile="syifa" id="deck-prev-syifa" title="Lagu Sebelumnya"><i class="fa-solid fa-backward-step"></i></button>
+                                    <button type="button" class="deck-ctrl-btn deck-play-btn" data-profile="syifa" id="deck-play-syifa" title="Putar / Jeda"><i class="fa-solid fa-play"></i></button>
+                                    <button type="button" class="deck-ctrl-btn deck-next-btn" data-profile="syifa" id="deck-next-syifa" title="Lagu Berikutnya"><i class="fa-solid fa-forward-step"></i></button>
+                                </div>
                             </div>
                         </div>
 
                         <div class="music-playlist-wrapper">
                             <div class="playlist-header">
-                                <span><i class="fa-solid fa-list-ul"></i> Daftar Putar Syifa</span>
-                                <span class="playlist-count">2 Lagu</span>
+                                <span><i class="fa-solid fa-list-ul"></i> Daftar Putar Lagu Syifa</span>
+                                <span class="playlist-count">3 Lagu</span>
                             </div>
                             <div class="music-track-list">
-                                <div class="music-track-item active" data-profile="syifa" data-index="0" data-title="Treat You Better" data-artist="Shawn Mendes" data-audio="audio/treat_you_better.m4a">
+                                <div class="music-track-item active" data-profile="syifa" data-index="0" data-title="Jatuh Suka" data-artist="Tulus" data-audio="audio/jatuh_suka.m4a">
                                     <div class="track-number"><i class="fa-solid fa-play"></i></div>
+                                    <div class="track-info">
+                                        <span class="track-title">Jatuh Suka</span>
+                                        <span class="track-artist">Tulus</span>
+                                    </div>
+                                    <span class="track-genre-pill">Pop</span>
+                                    <span class="track-duration">03:54</span>
+                                    <button type="button" class="track-play-btn" aria-label="Putar lagu"><i class="fa-solid fa-play"></i></button>
+                                </div>
+
+                                <div class="music-track-item" data-profile="syifa" data-index="1" data-title="Treat You Better" data-artist="Shawn Mendes" data-audio="audio/treat_you_better.m4a">
+                                    <div class="track-number">2</div>
                                     <div class="track-info">
                                         <span class="track-title">Treat You Better</span>
                                         <span class="track-artist">Shawn Mendes</span>
@@ -502,8 +519,8 @@
                                     <button type="button" class="track-play-btn" aria-label="Putar lagu"><i class="fa-solid fa-play"></i></button>
                                 </div>
 
-                                <div class="music-track-item" data-profile="syifa" data-index="1" data-title="Iris" data-artist="Goo Goo Dolls" data-audio="audio/iris.m4a">
-                                    <div class="track-number">2</div>
+                                <div class="music-track-item" data-profile="syifa" data-index="2" data-title="Iris" data-artist="Goo Goo Dolls" data-audio="audio/iris.m4a">
+                                    <div class="track-number">3</div>
                                     <div class="track-info">
                                         <span class="track-title">Iris</span>
                                         <span class="track-artist">Goo Goo Dolls</span>
@@ -894,8 +911,8 @@
                                     <span class="music-dot-pulse"></span>
                                     <span class="music-status-text" id="music-status-febri">Siap Diputar</span>
                                 </div>
-                                <h3 class="now-playing-title" id="now-title-febri">Ndoro Ayu</h3>
-                                <p class="now-playing-artist" id="now-artist-febri">Cindi Cintya • Dangdut Pop</p>
+                                <h3 class="now-playing-title" id="now-title-febri">Sesi Potret</h3>
+                                <p class="now-playing-artist" id="now-artist-febri">eńau feat. Ari Lesmana • Indie Folk</p>
 
                                 <div class="music-equalizer" id="equalizer-febri">
                                     <span class="bar bar-1"></span>
@@ -906,7 +923,7 @@
                                 </div>
 
                                 <div class="music-progress-container">
-                                    <div class="music-progress-bar" id="music-progress-febri">
+                                    <div class="music-progress-bar" id="music-progress-febri" title="Klik untuk melompat ke bagian lagu">
                                         <div class="music-progress-fill" id="progress-fill-febri"></div>
                                     </div>
                                     <div class="music-time-display">
@@ -914,17 +931,34 @@
                                         <span class="music-time-duration" id="time-dur-febri">0:30</span>
                                     </div>
                                 </div>
+
+                                <div class="music-deck-controls">
+                                    <button type="button" class="deck-ctrl-btn deck-prev-btn" data-profile="fesya" id="deck-prev-febri" title="Lagu Sebelumnya"><i class="fa-solid fa-backward-step"></i></button>
+                                    <button type="button" class="deck-ctrl-btn deck-play-btn" data-profile="fesya" id="deck-play-febri" title="Putar / Jeda"><i class="fa-solid fa-play"></i></button>
+                                    <button type="button" class="deck-ctrl-btn deck-next-btn" data-profile="fesya" id="deck-next-febri" title="Lagu Berikutnya"><i class="fa-solid fa-forward-step"></i></button>
+                                </div>
                             </div>
                         </div>
 
                         <div class="music-playlist-wrapper">
                             <div class="playlist-header">
-                                <span><i class="fa-solid fa-list-ul"></i> Daftar Putar Febri</span>
-                                <span class="playlist-count">2 Lagu</span>
+                                <span><i class="fa-solid fa-list-ul"></i> Daftar Putar Lagu Febri</span>
+                                <span class="playlist-count">3 Lagu</span>
                             </div>
                             <div class="music-track-list">
-                                <div class="music-track-item active" data-profile="fesya" data-index="0" data-title="Ndoro Ayu" data-artist="Cindi Cintya" data-audio="audio/ndoro_ayu.m4a">
+                                <div class="music-track-item active" data-profile="fesya" data-index="0" data-title="Sesi Potret" data-artist="eńau feat. Ari Lesmana" data-audio="audio/sesi_potret.m4a">
                                     <div class="track-number"><i class="fa-solid fa-play"></i></div>
+                                    <div class="track-info">
+                                        <span class="track-title">Sesi Potret</span>
+                                        <span class="track-artist">eńau feat. Ari Lesmana</span>
+                                    </div>
+                                    <span class="track-genre-pill">Indie Folk</span>
+                                    <span class="track-duration">04:18</span>
+                                    <button type="button" class="track-play-btn" aria-label="Putar lagu"><i class="fa-solid fa-play"></i></button>
+                                </div>
+
+                                <div class="music-track-item" data-profile="fesya" data-index="1" data-title="Ndoro Ayu" data-artist="Cindi Cintya" data-audio="audio/ndoro_ayu.m4a">
+                                    <div class="track-number">2</div>
                                     <div class="track-info">
                                         <span class="track-title">Ndoro Ayu</span>
                                         <span class="track-artist">Cindi Cintya</span>
@@ -934,8 +968,8 @@
                                     <button type="button" class="track-play-btn" aria-label="Putar lagu"><i class="fa-solid fa-play"></i></button>
                                 </div>
 
-                                <div class="music-track-item" data-profile="fesya" data-index="1" data-title="Sewates Gandrung" data-artist="Wahyu F Giri" data-audio="audio/sewates_gandrung.m4a">
-                                    <div class="track-number">2</div>
+                                <div class="music-track-item" data-profile="fesya" data-index="2" data-title="Sewates Gandrung" data-artist="Wahyu F Giri" data-audio="audio/sewates_gandrung.m4a">
+                                    <div class="track-number">3</div>
                                     <div class="track-info">
                                         <span class="track-title">Sewates Gandrung</span>
                                         <span class="track-artist">Wahyu F Giri</span>
@@ -1217,6 +1251,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
     <!-- JavaScript Utama -->
-    <script src="script.js?v=4.0"></script>
+    <script src="script.js?v=5.0"></script>
 </body>
 </html>
