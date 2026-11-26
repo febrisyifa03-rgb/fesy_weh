@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 1. INISIALISASI & MEMUAT DATA DARI LOCALSTORAGE
     // =========================================================================
-    const BUILD_VERSION = 'v5.2_all_full_local_mp3';
+    const BUILD_VERSION = 'v5.3_fix_clean_views_no_double_header';
     if (localStorage.getItem('biodata_build_version') !== BUILD_VERSION) {
         localStorage.removeItem('biodata_html_syifa');
         localStorage.removeItem('biodata_html_fesya');
@@ -52,8 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
         const testSyifa = localStorage.getItem('biodata_html_syifa');
-        if (testSyifa && !testSyifa.includes('favorites')) {
+        if (testSyifa && (!testSyifa.includes('favorites') || testSyifa.includes('<header'))) {
             localStorage.removeItem('biodata_html_syifa');
+        }
+        const testFesya = localStorage.getItem('biodata_html_fesya');
+        if (testFesya && (!testFesya.includes('favorites') || testFesya.includes('<header'))) {
             localStorage.removeItem('biodata_html_fesya');
         }
     } catch(e) {}
@@ -63,14 +66,14 @@ document.addEventListener('DOMContentLoaded', () => {
         fesya: document.getElementById('view-fesya')
     };
 
-    // Muat editan kustom yang tersimpan permanen di browser (hanya jika valid)
+    // Muat editan kustom yang tersimpan permanen di browser (hanya jika valid dan tidak corrupt)
     try {
         const savedSyifaHTML = localStorage.getItem('biodata_html_syifa');
-        if (savedSyifaHTML && savedSyifaHTML.trim().length > 200 && profileViews.syifa) {
+        if (savedSyifaHTML && savedSyifaHTML.trim().length > 200 && !savedSyifaHTML.includes('<header') && profileViews.syifa) {
             profileViews.syifa.innerHTML = savedSyifaHTML;
         }
         const savedFesyaHTML = localStorage.getItem('biodata_html_fesya');
-        if (savedFesyaHTML && savedFesyaHTML.trim().length > 200 && profileViews.fesya) {
+        if (savedFesyaHTML && savedFesyaHTML.trim().length > 200 && !savedFesyaHTML.includes('<header') && profileViews.fesya) {
             profileViews.fesya.innerHTML = savedFesyaHTML;
         }
 
@@ -102,8 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Jangan timpa saat pengguna sedang aktif mengetik di mode edit
                     if (isEditMode) return;
 
-                    // Pastikan data Firestore memiliki seksi favorites dan sesuai buildVersion sebelum menimpa tampilan
-                    if (data && data.buildVersion === BUILD_VERSION && data.syifa && data.syifa.includes('favorites') && profileViews.syifa) {
+                    // Pastikan data Firestore memiliki seksi favorites, sesuai buildVersion, dan bebas duplikasi header sebelum menimpa tampilan
+                    if (data && data.buildVersion === BUILD_VERSION && data.syifa && data.syifa.includes('favorites') && !data.syifa.includes('<header') && profileViews.syifa) {
                         profileViews.syifa.innerHTML = data.syifa;
                         const imgSyifa = profileViews.syifa.querySelector('.avatar-img');
                         if (imgSyifa && !imgSyifa.src.startsWith('data:')) {
@@ -112,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         try { localStorage.setItem('biodata_html_syifa', data.syifa); } catch(e){}
                     }
 
-                    if (data && data.buildVersion === BUILD_VERSION && data.fesya && data.fesya.includes('favorites') && profileViews.fesya) {
+                    if (data && data.buildVersion === BUILD_VERSION && data.fesya && data.fesya.includes('favorites') && !data.fesya.includes('<header') && profileViews.fesya) {
                         profileViews.fesya.innerHTML = data.fesya;
                         const imgFebri = profileViews.fesya.querySelector('.avatar-img');
                         if (imgFebri && !imgFebri.src.startsWith('data:')) {
