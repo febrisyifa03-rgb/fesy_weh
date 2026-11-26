@@ -835,11 +835,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const febriSpeechQuotes = [
         "Halo kapten! Siap meluncur ke angkasa bareng Febri? 🚀🌌",
+        "Makasih ya udah mampir ke profil Febri! Kamu manis banget hari ini ✨🌸",
+        "Lagi capek ya? Febri kirim pelukan virtual dan energi bintang 100%! ⭐🤗",
         "Nanti sore gas main badminton gak nih? 🏸😎",
-        "Leveling up coding game! Keep pushing! 🎮⚡",
-        "Menuju cita-cita CEO hebat! Aamiin! ⭐🪐",
-        "Semangat terus kawan pejuang RPL 1! 💻🔥",
-        "Dengerin musik asik biar ngetik kode makin santai 🎵🎧"
+        "Leveling up coding game! Keep pushing, kamu pasti bisa! 🎮⚡",
+        "Menuju cita-cita CEO hebat! Aamiin ya rabbal alamin! ⭐🪐",
+        "Jangan lupa makan enak dan istirahat yang cukup ya! 🍫✨",
+        "Apapun yang lagi kamu usahakan hari ini, semoga lancar dan berkah ya! 🚀💙",
+        "Semangat terus kawan pejuang RPL 1! Masa depan cerah menanti kita! 💻🔥",
+        "Dengerin musik asik biar ngetik kode makin santai dan enjoy 🎵🎧",
+        "Febri bangga banget sama proses dan kerja kerasmu selama ini! Keep shining! 🌟"
     ];
 
     let speechBubbleTimer = null;
@@ -865,15 +870,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 4000);
     }
 
-    // D. Kotak Kejutan & Pesan Keberuntungan Lucu
+    // D. Kotak Kejutan & Pesan Keberuntungan Lucu (Penuh Pesan Manis & Doa Spesial dari Febri & Syifa)
     const fortuneQuotes = [
+        // Pesan Manis & Keberuntungan dari Febri
+        { text: "Jangan lupa tersenyum ya! Hari ini semesta lagi berpihak sama kamu. Semua impianmu pasti ada jalannya! 🌟🪐", author: "— Febri (XII RPL 1)" },
+        { text: "Kalau lagi capek atau pusing, istirahat sejenak ya. Jangan menyerah, setiap langkah kecilmu itu berharga banget! 🚀💙", author: "— Febri (XII RPL 1)" },
+        { text: "Semoga harimu dipenuhi hal-hal baik, tawa yang tulus, dan kejutan manis yang bikin hati adem! ✨🌸", author: "— Febri (XII RPL 1)" },
+        { text: "Ingat ya, kamu itu hebat dan berharga! Terima kasih sudah bertahan dan berjuang sampai sejauh ini. Bangga sama kamu! ⭐💫", author: "— Febri (XII RPL 1)" },
+        { text: "Tarik napas dalam-dalam, hembuskan. Hari ini bakal penuh keberuntungan dan pintu rezeki terbuka lebar buat kamu! 🍀🌈", author: "— Febri (XII RPL 1)" },
+        { text: "Kejar mimpimu setinggi bintang di langit! Kalaupun jatuh, kamu tetap berada di antara gugusan galaksi yang mempesona. 🌌🌠", author: "— Febri (XII RPL 1)" },
+        { text: "Satu kemenangan kecil hari ini adalah awal dari kesuksesan besar di masa depan. Semangat leveling up! 🏆🎮", author: "— Febri (XII RPL 1)" },
+        { text: "Buat kamu yang lagi berjuang, Febri kirimkan doa terbaik dan energi positif biar semua urusanmu lancar jaya! 💖✨", author: "— Febri (XII RPL 1)" },
+        { text: "Kebaikan sekecil apapun yang kamu berikan hari ini, pasti bakal kembali dalam bentuk kebahagiaan berlipat ganda! 🍫🌻", author: "— Febri (XII RPL 1)" },
+        { text: "Jangan bandingkan prosesmu dengan orang lain. Bunga mekar di musimnya masing-masing, dan giliranmu akan tiba! 🌺⭐", author: "— Febri (XII RPL 1)" },
+        { text: "Fokus ke tujuanmu! Kita berdua sama-sama berjuang menuju cita-cita menjadi CEO handal di masa depan. 💼🚀", author: "— Febri (XII RPL 1)" },
+        { text: "Game yang seru itu yang punya banyak rintangan, sama kayak hidup. Selesaikan setiap quest dengan bangga dan senyuman! 🎮✨", author: "— Febri (XII RPL 1)" },
+        { text: "Jangan pernah ragu sama kemampuanmu. Kode masa depanmu ada di tanganmu sendiri! 💻🔥", author: "— Febri (XII RPL 1)" },
+        // Pesan Kolaborasi & dari Syifa
         { text: "Jangan pernah meremehkan setiap baris kode yang kamu tulis. Sukses besar dimulai dari 'Hello World' yang sederhana!", author: "— Syifa & Febri (XII RPL 1)" },
         { text: "Hari ini keberuntunganmu 100%! Kesulitan apa pun pasti bisa kamu selesaikan dengan senyuman. 🌟", author: "— Syifa & Febri (XII RPL 1)" },
         { text: "Istirahat sebentar, minum air putih, dan dengarkan lagu favoritmu. Otakmu butuh istirahat manis! 🍫", author: "— Syifa (XII RPL 1)" },
-        { text: "Fokus ke tujuanmu! Kita berdua sama-sama berjuang menuju cita-cita menjadi CEO handal. 💼🚀", author: "— Febri (XII RPL 1)" },
         { text: "Error dan bug bukan kegagalan, itu cuma tanda kalau kamu selangkah lebih dekat ke solusi terbaik! 💻✨", author: "— Semangat XII RPL 1" },
         { text: "Kamu lebih hebat dari yang kamu kira. Tetap percaya diri dan terus melangkah! 💖", author: "— Syifa & Febri (XII RPL 1)" },
-        { text: "Game yang seru itu yang punya banyak rintangan, sama kayak hidup. Selesaikan setiap quest dengan bangga! 🎮", author: "— Febri (XII RPL 1)" },
         { text: "Hari ini adalah hari yang manis! Luangkan waktu untuk mengapresiasi dirimu sendiri. 🌸🍓", author: "— Syifa (XII RPL 1)" }
     ];
 
@@ -1149,7 +1167,20 @@ document.addEventListener('DOMContentLoaded', () => {
         // 2. Klik Tombol Buka Amplop Kejutan
         const fortuneBtn = e.target.closest('#cute-fortune-btn, .cute-envelope-btn');
         if (fortuneBtn) {
-            const random = fortuneQuotes[Math.floor(Math.random() * fortuneQuotes.length)];
+            const currentProfile = htmlElement.getAttribute('data-active-profile') || 'syifa';
+            const isFebri = currentProfile === 'fesya';
+
+            // Filter kumpulan pesan sesuai profil yang sedang aktif agar lebih relevan dan manis
+            const profileQuotes = fortuneQuotes.filter(q => {
+                if (isFebri) {
+                    return q.author.includes('Febri') || q.author.includes('XII RPL 1');
+                } else {
+                    return q.author.includes('Syifa') || q.author.includes('XII RPL 1');
+                }
+            });
+            const pool = profileQuotes.length > 0 ? profileQuotes : fortuneQuotes;
+            const random = pool[Math.floor(Math.random() * pool.length)];
+
             const textEl = document.getElementById('cute-fortune-text');
             const authorEl = document.getElementById('cute-fortune-author');
             const cardEl = document.getElementById('cute-fortune-card');
@@ -1161,9 +1192,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 cardEl.style.display = 'block';
             }
 
-            playCuteChime('bell');
+            playCuteChime(isFebri ? 'star' : 'bell');
             const rect = fortuneBtn.getBoundingClientRect();
-            spawnCuteParticles(rect.left + rect.width / 2, rect.top, ['💌', '✨', '🌸', '💖', '⭐', '🎉']);
+            spawnCuteParticles(
+                rect.left + rect.width / 2, 
+                rect.top, 
+                isFebri ? ['💌', '⭐', '🚀', '✨', '🪐', '💫', '🎉'] : ['💌', '✨', '🌸', '💖', '⭐', '🎉']
+            );
             return;
         }
 
